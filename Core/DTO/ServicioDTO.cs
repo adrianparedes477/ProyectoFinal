@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entidades
+namespace Core.DTO
 {
-    public class Servicio
+    public class ServicioDTO
     {
-        [Column("codServicio")]
-        public int Id { get; set; }
-
+        public int CodServicio { get; set; }
         public string Descr { get; set; }
-
-        public bool Estado { get; set; }
-
+        public string Estado { get; set; } // Cambio de bool a string
         public decimal ValorHora { get; set; }
     }
 }

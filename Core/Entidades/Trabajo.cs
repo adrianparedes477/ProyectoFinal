@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace Core.Entidades
 {
     public class Trabajo
     {
-        public int CodTrabajo { get; set; }
+        [Column("codTrabajo")]
+        public int Id { get; set; }
 
         public DateTime Fecha { get; set; }
 
@@ -21,5 +23,12 @@ namespace Core.Entidades
         public decimal ValorHora { get; set; }
 
         public decimal Costo { get; set; }
+
+        [ForeignKey("CodProyecto")]
+        public Proyecto Proyecto { get; set; }
+
+        [ForeignKey("CodServicio")]
+        public Servicio Servicio { get; set; }
+
     }
 }
