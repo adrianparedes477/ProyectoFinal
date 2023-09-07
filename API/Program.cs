@@ -1,3 +1,5 @@
+using Core.Negocio.INegocio;
+using Core.Negocio;
 using Infraestructura.Data;
 using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
@@ -19,6 +21,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connecti
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUnidadTrabajo, UnidadTrabajo>();
+builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+
+builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
 
 var app = builder.Build();
 

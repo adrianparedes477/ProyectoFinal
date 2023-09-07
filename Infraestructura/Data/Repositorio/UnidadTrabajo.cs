@@ -1,4 +1,5 @@
-﻿using Infraestructura.Data.Repositorio.IRepositorio;
+﻿using Core.Entidades;
+using Infraestructura.Data.Repositorio.IRepositorio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,6 @@ namespace Infraestructura.Data.Repositorio
             Usuario = new UsuarioRepositorio(_db);
 
         }
-
         public void Dispose()
         {
             _db.Dispose();
@@ -35,4 +35,6 @@ namespace Infraestructura.Data.Repositorio
             await _db.SaveChangesAsync();
         }
     }
+
+
 }

@@ -17,7 +17,7 @@ namespace Infraestructura.Data.Repositorio
             _db = db;
         }
 
-        public void Actulizar(Usuario usuario)
+        public void Actualizar(Usuario usuario)
         {
             var usuarioDB = _db.Usuario.FirstOrDefault(u=>u.Id == usuario.Id);
 
@@ -26,7 +26,7 @@ namespace Infraestructura.Data.Repositorio
                 usuarioDB.Nombre = usuario.Nombre;
                 usuarioDB.Dni = usuario.Dni;
                 usuarioDB.Tipo = usuario.Tipo;
-                usuario.Contrasenia = usuario.Contrasenia;
+                usuarioDB.Contrasenia = usuario.Contrasenia;
                 _db.SaveChanges();
             }
         }
