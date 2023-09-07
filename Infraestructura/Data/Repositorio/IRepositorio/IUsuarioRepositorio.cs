@@ -9,6 +9,6 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
 {
     public interface IUsuarioRepositorio : IRepositorio<Usuario>
     {
-        void Actulizar(Usuario usuario);
+        void Actualizar(Usuario usuario);
     }
 }
