@@ -20,17 +20,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UsuarioDTO>> GetAllUsuarios()
+        public async Task<IActionResult> GetAllUsuarios()
         {
             var usuarios = await _usuarioNegocio.GetAllUsuarios();
-            return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+            return Ok(usuarios);
         }
 
         [HttpGet("{id}")]
-        public async Task<UsuarioDTO> GetUsuarioById(int id)
+        public async Task<IActionResult> GetUsuarioById(int id)
         {
             var usuario = await _usuarioNegocio.GetUsuarioById(id);
-            return _mapper.Map<UsuarioDTO>(usuario);
+            return Ok(usuario);
         }
 
         [HttpPost]
