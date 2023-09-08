@@ -19,10 +19,10 @@ namespace Infraestructura.Data.Repositorio
         public UnidadTrabajo(ApplicationDbContext db)
         {
             _db = db;
-            Proyecto = new ProyectoRepositorio(db);
-            Servicio = new ServicioRepositorio(db);
-            Trabajo = new TrabajoRepositorio(db);
-            Usuario = new UsuarioRepositorio(db);
+            Proyecto = new ProyectoRepositorio(_db);
+            Servicio = new ServicioRepositorio(_db);
+            Trabajo = new TrabajoRepositorio(_db);
+            Usuario = new UsuarioRepositorio(_db);
 
         }
         public void Dispose()
