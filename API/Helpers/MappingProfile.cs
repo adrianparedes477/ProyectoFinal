@@ -7,6 +7,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Proyecto, ProyectoDto>().ReverseMap();
+        CreateMap<Servicio, ServicioDTO>().ReverseMap();
+        CreateMap<Servicio, ServicioDTO>().ReverseMap();
+        CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+
         // Mapeo de Proyecto a ProyectoDto
         CreateMap<Proyecto, ProyectoDto>()
             .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado.ToString()));
