@@ -21,10 +21,7 @@ namespace Infraestructura.Data.Repositorio
             await dbSet.AddAsync(entidad); // insert into Table
         }
 
-        public async Task<T> GetById(int id)
-        {
-            return await dbSet.FindAsync(id); // select * from (solo por Id)
-        }
+        
 
         public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> filtro = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
@@ -51,6 +48,11 @@ namespace Infraestructura.Data.Repositorio
                 query = query.AsNoTracking();
             }
             return await query.ToListAsync();
+        }
+
+        public async Task<T> GetById(int id)
+        {
+            return await dbSet.FindAsync(id); // select * from (solo por Id)
         }
 
         public async Task<T> ObtenerPrimero(Expression<Func<T, bool>> filtro = null, string incluirPropiedades = null, bool isTracking = true)

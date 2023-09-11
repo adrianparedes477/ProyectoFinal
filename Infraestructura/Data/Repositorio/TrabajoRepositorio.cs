@@ -1,5 +1,6 @@
 ﻿using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,15 @@ namespace Infraestructura.Data.Repositorio
         {
             _db = db;
         }
+
+        public async Task<Trabajo> GetByIdWithPropertiesAsync(int id)
+        {
+            return await _db.Trabajo
+                .Include(t => t.Proyecto)
+                .Include(t => t.Servicio)
+                .SingleOrDefaultAsync(t => t.Id == id);
+        }
+
 
         public void Actualizar(Trabajo trabajo)
         {
