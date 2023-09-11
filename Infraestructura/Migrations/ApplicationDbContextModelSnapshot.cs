@@ -160,13 +160,13 @@ namespace Infraestructura.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CantHoras = 10,
+                            Id = 2,
+                            CantHoras = 20,
                             CodProyecto = 1,
                             CodServicio = 1,
-                            Costo = 10m,
-                            Fecha = new DateTime(2023, 9, 10, 20, 43, 19, 340, DateTimeKind.Local).AddTicks(910),
-                            ValorHora = 5m
+                            Costo = 20m,
+                            Fecha = new DateTime(2023, 9, 11, 8, 36, 52, 409, DateTimeKind.Local).AddTicks(5098),
+                            ValorHora = 10m
                         });
                 });
 
@@ -206,7 +206,7 @@ namespace Infraestructura.Migrations
                         new
                         {
                             Id = 1,
-                            Contrasenia = "$2a$10$s0nOVZzbldsEDZljRFzNkuBSn0YfwTHqJKB3nKZrP/qUn77793MyG",
+                            Contrasenia = "$2a$10$ZDKF6q1MFSk6uQiE9HAjD.dxU.zlk4zydCzZI9f16ovHSNygJ3RVu",
                             Dni = 12345678,
                             Nombre = "Admin",
                             Tipo = 1
@@ -214,7 +214,7 @@ namespace Infraestructura.Migrations
                         new
                         {
                             Id = 2,
-                            Contrasenia = "$2a$10$ZJT21qs3pbVu6JL/jLQfl.uvxtzRz4MmZhoFdYQ26BK1suqWaBpWG",
+                            Contrasenia = "$2a$10$MSixLnasvh2aberULuX9RepW/mGT89iJ4sP8QEYk.UJdh0atMAcqK",
                             Dni = 87654321,
                             Nombre = "Consultor",
                             Tipo = 2
