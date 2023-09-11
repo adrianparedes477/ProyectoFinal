@@ -49,15 +49,15 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] UsuarioDTO usuarioDTO)
         {
-            // Llama al método de negocio para actualizar un usuario
+            
             var actualizado = await _usuarioNegocio.ActualizarUsuario(usuarioDTO);
 
             if (actualizado)
             {
-                return Ok(); // Indica que la operación fue exitosa
+                return Ok(); 
             }
 
-            return NotFound(); // Indica que no se encontró el usuario o no se pudo actualizar
+            return NotFound(); 
         }
 
 
