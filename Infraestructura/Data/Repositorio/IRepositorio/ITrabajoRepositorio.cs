@@ -10,5 +10,7 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
     public interface ITrabajoRepositorio :IRepositorio<Trabajo>
     {
         void Actualizar(Trabajo trabajo);
+
+        Task<Trabajo> GetByIdWithPropertiesAsync(int id);
     }
 }
