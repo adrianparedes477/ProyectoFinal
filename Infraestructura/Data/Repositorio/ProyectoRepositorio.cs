@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infraestructura.Data.Repositorio
 {
-    internal class ProyectoRepositorio :Repositorio<Proyecto>,IProyectoRepositorio
+    public class ProyectoRepositorio :Repositorio<Proyecto>,IProyectoRepositorio
     {
         private readonly ApplicationDbContext _db;
 

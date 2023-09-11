@@ -27,6 +27,8 @@ namespace Infraestructura.Data.Repositorio
                 trabajoDB.CantHoras = trabajo.CantHoras;
                 trabajoDB.ValorHora = trabajo.ValorHora;
                 trabajoDB.Costo = trabajo.Costo;
+                trabajoDB.CodProyecto = trabajo.CodProyecto;
+                trabajoDB.CodServicio = trabajo.CodServicio;
                 _db.SaveChanges();
             }
         }

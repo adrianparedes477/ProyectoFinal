@@ -32,17 +32,46 @@ namespace Infraestructura.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("Estado")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Proyecto");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Direccion = "Calle falsa 123",
+                            Estado = 2,
+                            Nombre = "Proyecto A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Direccion = "Calle falsa 456",
+                            Estado = 3,
+                            Nombre = "Proyecto B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Direccion = "Calle falsa 789",
+                            Estado = 1,
+                            Nombre = "Proyecto C"
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Servicio", b =>
@@ -55,17 +84,39 @@ namespace Infraestructura.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Descr")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Estado")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<decimal>("ValorHora")
+                        .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Servicio");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descr = "Servicio 1",
+                            Estado = true,
+                            ValorHora = 10.50m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descr = "Servicio 2",
+                            Estado = false,
+                            ValorHora = 15.75m
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Trabajo", b =>
@@ -78,6 +129,7 @@ namespace Infraestructura.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("CantHoras")
+                        .HasMaxLength(60)
                         .HasColumnType("int");
 
                     b.Property<int>("CodProyecto")
@@ -87,12 +139,14 @@ namespace Infraestructura.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Costo")
+                        .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("ValorHora")
+                        .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -102,6 +156,18 @@ namespace Infraestructura.Migrations
                     b.HasIndex("CodServicio");
 
                     b.ToTable("Trabajo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CantHoras = 10,
+                            CodProyecto = 1,
+                            CodServicio = 1,
+                            Costo = 10m,
+                            Fecha = new DateTime(2023, 9, 10, 20, 43, 19, 340, DateTimeKind.Local).AddTicks(910),
+                            ValorHora = 5m
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Usuario", b =>
@@ -114,20 +180,45 @@ namespace Infraestructura.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Contrasenia")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("Dni")
+                        .HasMaxLength(60)
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("Tipo")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(2);
 
                     b.HasKey("Id");
 
                     b.ToTable("Usuario");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Contrasenia = "$2a$10$s0nOVZzbldsEDZljRFzNkuBSn0YfwTHqJKB3nKZrP/qUn77793MyG",
+                            Dni = 12345678,
+                            Nombre = "Admin",
+                            Tipo = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Contrasenia = "$2a$10$ZJT21qs3pbVu6JL/jLQfl.uvxtzRz4MmZhoFdYQ26BK1suqWaBpWG",
+                            Dni = 87654321,
+                            Nombre = "Consultor",
+                            Tipo = 2
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Trabajo", b =>
