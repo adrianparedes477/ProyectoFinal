@@ -8,7 +8,7 @@ namespace Core.DTO
 {
     public class ProyectoDto
     {
-        public int CodProyecto { get; set; }
+        public int Id { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
         public string Estado { get; set; } // Cambio de enum a string

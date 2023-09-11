@@ -4,6 +4,8 @@ using Infraestructura.Data;
 using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
+using API.Negocio.INegocio;
+using API.Negocio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +24,15 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUnidadTrabajo, UnidadTrabajo>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IProyectoRepositorio, ProyectoRepositorio>();
+builder.Services.AddScoped<IServicioRepositorio, ServicioRepositorio>();
+builder.Services.AddScoped<ITrabajoRepositorio, TrabajoRepositorio>();
 
 builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
+builder.Services.AddScoped<IProyectoNegocio, ProyectoNegocio>();
+builder.Services.AddScoped<IServicioNegocio, ServicioNegocio>();
+builder.Services.AddScoped<ITrabajoNegocio, TrabajoNegocio>();
+
 
 var app = builder.Build();
 

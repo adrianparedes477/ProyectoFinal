@@ -1,4 +1,6 @@
 ﻿using Core.Entidades;
+using Infraestructura.Data.Configuracion;
+using Infraestructura.Data.Seeds;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,12 +25,23 @@ namespace Infraestructura.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.ApplyConfiguration(new TrabajoConfiguracion());
+            modelBuilder.ApplyConfiguration(new UsuarioConfiguracion());
+            modelBuilder.ApplyConfiguration(new ServicioConfiguracion());
+            modelBuilder.ApplyConfiguration(new ProyectoConfiguracion());
+
+            modelBuilder.ApplyConfiguration(new UsuarioSeeder());
+            modelBuilder.ApplyConfiguration(new ProyectoSeeder());
+            modelBuilder.ApplyConfiguration(new ServicioSeeder());
+            modelBuilder.ApplyConfiguration(new TrabajoSeeder());
+
+            
             modelBuilder.Entity<Servicio>(entity =>
             {
                 entity.Property(e => e.ValorHora)
                     .HasColumnType("decimal(18, 2)");
-                // O HasPrecision si prefieres configurar precisión y escala:
-                // .HasPrecision(18, 2);
+                
             });
 
             modelBuilder.Entity<Trabajo>(entity =>

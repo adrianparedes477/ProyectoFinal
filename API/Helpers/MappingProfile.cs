@@ -29,8 +29,5 @@ public class MappingProfile : Profile
         CreateMap<UsuarioDTO, Usuario>()
             .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => Enum.Parse(typeof(TipoUsuario), src.Tipo)));
 
-        // Mapeo de LoginAdminDTO a Usuario (para el inicio de sesión de administrador)
-        CreateMap<LoginAdminDTO, Usuario>()
-            .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => TipoUsuario.Admistrador));
     }
 }

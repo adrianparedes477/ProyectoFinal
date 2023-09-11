@@ -11,5 +11,7 @@ namespace Core.DTO
         public string Nombre { get; set; }
 
         public string Contrasenia { get; set; }
+
+
     }
 }
