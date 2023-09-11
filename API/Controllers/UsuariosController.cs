@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/usuarios")]
-    public class UsuarioController : ControllerBase
+    [Route("api/Usuarios")]
+    public class UsuariosController : ControllerBase
     {
         private readonly IUsuarioNegocio _usuarioNegocio;
         private readonly IMapper _mapper;
 
-        public UsuarioController(IUsuarioNegocio usuarioNegocio, IMapper mapper)
+        public UsuariosController(IUsuarioNegocio usuarioNegocio, IMapper mapper)
         {
             _usuarioNegocio = usuarioNegocio;
             _mapper = mapper;
