@@ -27,7 +27,8 @@ namespace API.Negocio
 
         public async Task<TrabajoDTO> GetTrabajoById(int id)
         {
-            var trabajo = await _unidadTrabajo.Trabajo.GetById(id);
+            var trabajo = await _unidadTrabajo.Trabajo.GetByIdWithPropertiesAsync(id);
+
             return _mapper.Map<TrabajoDTO>(trabajo);
         }
 

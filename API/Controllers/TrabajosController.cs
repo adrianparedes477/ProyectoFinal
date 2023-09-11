@@ -16,13 +16,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TrabajoDTO>> GetAllTrabajos()
+        public async Task<IActionResult> GetAllTrabajos()
         {
-            return await _trabajoNegocio.GetAllTrabajos();
+            var trabajo = await _trabajoNegocio.GetAllTrabajos();
+            return Ok(trabajo);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TrabajoDTO>> GetTrabajoById(int id)
+        public async Task<IActionResult> GetTrabajoById(int id)
         {
             var trabajo = await _trabajoNegocio.GetTrabajoById(id);
 
@@ -31,7 +32,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return trabajo;
+            return Ok(trabajo);
         }
 
         [HttpPost]
