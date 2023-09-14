@@ -62,7 +62,7 @@ namespace API.Controllers
 
             if (id != usuarioDTO.Id)
             {
-                return BadRequest("Id del Trabajo no Coincide");
+                return BadRequest("Id del usuario no Coincide");
             }
 
             if (!ModelState.IsValid)

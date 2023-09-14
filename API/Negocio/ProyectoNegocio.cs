@@ -3,6 +3,7 @@ using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
 using Core.Negocio.INegocio;
+using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -49,9 +50,19 @@ namespace Core.Negocio
         public async Task<bool> ActualizarProyecto(ProyectoDto proyectoDto)
         {
             var proyecto = _mapper.Map<Proyecto>(proyectoDto);
-            _proyectoRepositorio.Actualizar(proyecto); // Utiliza el método de repositorio
-            await _unidadTrabajo.Guardar();
-            return true;
+            var proyectoExiste = await _proyectoRepositorio.ObtenerPrimero(t => t.Id == proyecto.Id);
+
+            if (proyectoExiste != null)
+            {
+                _proyectoRepositorio.Actualizar(proyecto); 
+                await _unidadTrabajo.Guardar();
+                return true;
+            }
+            else
+            {
+                throw new Exception("El Proyecto no existe en la base de datos.");
+            }
+
         }
 
         public async Task<bool> EliminarProyecto(int id)

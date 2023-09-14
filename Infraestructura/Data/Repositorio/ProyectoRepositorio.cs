@@ -28,6 +28,11 @@ namespace Infraestructura.Data.Repositorio
                 proyectoDB.Estado = proyecto.Estado;
                 _db.SaveChanges();
             }
+            else
+            {
+
+                throw new Exception("El Proyecto no existe en la base de datos.");
+            }
         }
     }
 }

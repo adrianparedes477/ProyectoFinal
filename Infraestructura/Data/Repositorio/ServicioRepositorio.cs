@@ -28,6 +28,11 @@ namespace Infraestructura.Data.Repositorio
                 servicioDB.ValorHora = servicio.ValorHora;
                 _db.SaveChanges();
             }
+            else
+            {
+
+                throw new Exception("El Servicio no existe en la base de datos.");
+            }
         }
     }
 }
