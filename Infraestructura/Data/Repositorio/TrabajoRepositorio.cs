@@ -27,9 +27,11 @@ namespace Infraestructura.Data.Repositorio
         }
 
 
+
+
         public void Actualizar(Trabajo trabajo)
         {
-            var trabajoDB = _db.Trabajo.FirstOrDefault(t => t.Id == trabajo.Id); 
+            var trabajoDB = _db.Trabajo.FirstOrDefault(t => t.Id == trabajo.Id);
 
             if (trabajoDB != null)
             {
@@ -37,10 +39,16 @@ namespace Infraestructura.Data.Repositorio
                 trabajoDB.CantHoras = trabajo.CantHoras;
                 trabajoDB.ValorHora = trabajo.ValorHora;
                 trabajoDB.Costo = trabajo.Costo;
-                trabajoDB.CodProyecto = trabajo.CodProyecto;
-                trabajoDB.CodServicio = trabajo.CodServicio;
+
+                // Guardar los cambios en la base de datos
                 _db.SaveChanges();
             }
+            else
+            {
+                
+                throw new Exception("El trabajo no existe en la base de datos.");
+            }
         }
+
     }
 }

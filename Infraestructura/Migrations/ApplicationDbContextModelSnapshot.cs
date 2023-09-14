@@ -160,12 +160,12 @@ namespace Infraestructura.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2,
+                            Id = 1,
                             CantHoras = 20,
                             CodProyecto = 1,
                             CodServicio = 1,
                             Costo = 20m,
-                            Fecha = new DateTime(2023, 9, 11, 8, 36, 52, 409, DateTimeKind.Local).AddTicks(5098),
+                            Fecha = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ValorHora = 10m
                         });
                 });
@@ -188,7 +188,7 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("int");
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("NombreCompleto")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
@@ -206,17 +206,17 @@ namespace Infraestructura.Migrations
                         new
                         {
                             Id = 1,
-                            Contrasenia = "$2a$10$ZDKF6q1MFSk6uQiE9HAjD.dxU.zlk4zydCzZI9f16ovHSNygJ3RVu",
+                            Contrasenia = "$2a$10$tY1kk65X7.wUWHuK2ezLkuMxjrCbhKOD9rcRmGWooYifOvQbtp2kW",
                             Dni = 12345678,
-                            Nombre = "Admin",
+                            NombreCompleto = "Admin",
                             Tipo = 1
                         },
                         new
                         {
                             Id = 2,
-                            Contrasenia = "$2a$10$MSixLnasvh2aberULuX9RepW/mGT89iJ4sP8QEYk.UJdh0atMAcqK",
+                            Contrasenia = "$2a$10$Is8PoY3MdfPQyMOc50SSjOwelIh0s4zX2S34MLeOb6KsQvT1DnQDe",
                             Dni = 87654321,
-                            Nombre = "Consultor",
+                            NombreCompleto = "Consultor",
                             Tipo = 2
                         });
                 });

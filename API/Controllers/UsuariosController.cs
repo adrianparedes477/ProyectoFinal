@@ -1,8 +1,11 @@
-﻿using AutoMapper;
+﻿using API.Especificaciones;
+using AutoMapper;
 using Core.DTO;
 using Core.Negocio.INegocio;
+using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -11,20 +14,27 @@ namespace API.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly IUsuarioNegocio _usuarioNegocio;
-        private readonly IMapper _mapper;
+        private readonly IUnidadTrabajo _unidadTrabajo;
 
-        public UsuariosController(IUsuarioNegocio usuarioNegocio, IMapper mapper)
+        public UsuariosController(IUsuarioNegocio usuarioNegocio, IUnidadTrabajo unidadTrabajo)
         {
             _usuarioNegocio = usuarioNegocio;
-            _mapper = mapper;
+            _unidadTrabajo = unidadTrabajo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsuarios()
+        public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
         {
-            var usuarios = await _usuarioNegocio.GetAllUsuarios();
-            return Ok(usuarios);
+            var parametros = new Parametros
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var paginaUsuarios = await _unidadTrabajo.Usuario.ObtenerTodosPaginado(parametros);
+            return Ok(paginaUsuarios);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUsuarioById(int id)
@@ -49,15 +59,34 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] UsuarioDTO usuarioDTO)
         {
-            
-            var actualizado = await _usuarioNegocio.ActualizarUsuario(usuarioDTO);
 
-            if (actualizado)
+            if (id != usuarioDTO.Id)
             {
-                return Ok(); 
+                return BadRequest("Id del Trabajo no Coincide");
             }
 
-            return NotFound(); 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Informacion Incorrecta");
+            }
+
+            try
+            {
+                var actualizado = await _usuarioNegocio.ActualizarUsuario(usuarioDTO);
+
+                if (actualizado)
+                {
+                    return Ok("Usuario actualizado con éxito");
+                }
+                else
+                {
+                    return BadRequest("El Usuario no pudo ser actualizado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
 
