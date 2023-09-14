@@ -51,7 +51,7 @@ namespace Core.Negocio
             }
             else
             {
-                throw new Exception("El trabajo no existe en la base de datos.");
+                throw new Exception("El Usuario no existe en la base de datos.");
             }
 
 
@@ -60,9 +60,19 @@ namespace Core.Negocio
         public async Task<bool> ActualizarUsuario(UsuarioDTO usuarioDTO)
         {
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
-            _usuarioRepositorio.Actualizar(usuario); // Utiliza el método de repositorio
-            await _unidadTrabajo.Guardar();
-            return true;
+            var usuarioExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Id == usuario.Id);
+
+            if (usuarioExiste != null)
+            {
+                _usuarioRepositorio.Actualizar(usuario);
+                await _unidadTrabajo.Guardar();
+                return true;
+            }
+            else
+            {
+                throw new Exception("El Usuario no existe en la base de datos.");
+            }
+            
         }
 
         public async Task<bool> EliminarUsuario(int id)
