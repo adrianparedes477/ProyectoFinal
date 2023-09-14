@@ -1,8 +1,10 @@
-﻿using API.Negocio.INegocio;
+﻿using API.Especificaciones;
+using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
 using Core.Negocio.INegocio;
+using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,19 +15,25 @@ namespace API.Controllers
     public class ServiciosController : ControllerBase
     {
         private readonly IServicioNegocio _servicioNegocio;
-        private readonly IMapper _mapper;
+        private readonly IUnidadTrabajo _unidadTrabajo;
 
-        public ServiciosController(IServicioNegocio servicioNegocio, IMapper mapper)
+        public ServiciosController(IServicioNegocio servicioNegocio, IUnidadTrabajo unidadTrabajo)
         {
             _servicioNegocio = servicioNegocio;
-            _mapper = mapper;
+            _unidadTrabajo = unidadTrabajo;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllServicios()
+        public async Task<IActionResult> GetAllServicios(int pageNumber = 1, int pageSize = 10)
         {
-            var servicios = await _servicioNegocio.GetAllServicios();
-            return Ok(servicios);
+            var parametros = new Parametros
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var paginaServicios = await _unidadTrabajo.Servicio.ObtenerTodosPaginado(parametros);
+            return Ok(paginaServicios);
         }
 
         [HttpGet("{id}")]

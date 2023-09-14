@@ -23,11 +23,15 @@ namespace Infraestructura.Data.Repositorio
 
             if (usuarioDB != null) 
             {
-                usuarioDB.Nombre = usuario.Nombre;
+                usuarioDB.NombreCompleto = usuario.NombreCompleto;
                 usuarioDB.Dni = usuario.Dni;
                 usuarioDB.Tipo = usuario.Tipo;
-                usuarioDB.Contrasenia = usuario.Contrasenia;
                 _db.SaveChanges();
+            }
+            else
+            {
+
+                throw new Exception("El trabajo no existe en la base de datos.");
             }
         }
     }

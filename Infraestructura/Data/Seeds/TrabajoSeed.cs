@@ -17,13 +17,14 @@ namespace Infraestructura.Data.Seeds
             builder.HasData(
                 new Trabajo
                 {
-                    Id = 2,
-                    Fecha = DateTime.Now,
+                    Id = 1,
+                    Fecha = new DateTime(2023, 08, 30),
                     CodProyecto = 1,
                     CodServicio = 1,
                     CantHoras = 20,
                     ValorHora = 10,
                     Costo = 20
+
 
                 }
             );

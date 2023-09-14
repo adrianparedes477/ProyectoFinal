@@ -18,9 +18,7 @@ namespace Infraestructura.Data
 
         public DbSet<Proyecto> Proyecto { get; set; }
         public DbSet<Servicio> Servicio { get; set; }
-
         public DbSet<Trabajo> Trabajo { get; set; }
-
         public DbSet<Usuario> Usuario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,7 +34,7 @@ namespace Infraestructura.Data
             modelBuilder.ApplyConfiguration(new ServicioSeeder());
             modelBuilder.ApplyConfiguration(new TrabajoSeeder());
 
-            
+
             modelBuilder.Entity<Servicio>(entity =>
             {
                 entity.Property(e => e.ValorHora)
