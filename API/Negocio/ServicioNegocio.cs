@@ -43,9 +43,19 @@ namespace API.Negocio
         public async Task<bool> ActualizarServicio(ServicioDTO servicioDTO)
         {
             var servicio = _mapper.Map<Servicio>(servicioDTO);
-            _servicioRepositorio.Actualizar(servicio); // Utiliza el método de repositorio
-            await _unidadTrabajo.Guardar();
-            return true;
+            var servicioExiste = await _servicioRepositorio.ObtenerPrimero(t => t.Id == servicio.Id);
+
+            if (servicioExiste != null)
+            {
+                _servicioRepositorio.Actualizar(servicio); 
+                await _unidadTrabajo.Guardar();
+                return true;
+            }
+            else
+            {
+                throw new Exception("El Servicio no existe en la base de datos.");
+            }
+
         }
 
         

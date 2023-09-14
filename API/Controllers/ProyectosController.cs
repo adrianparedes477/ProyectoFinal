@@ -3,10 +3,12 @@ using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
+using Core.Negocio;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -66,15 +68,33 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarProyecto(int id, [FromBody] ProyectoDto proyectoDto)
         {
-            // Llama al método de negocio para actualizar un usuario
-            var actualizado = await _proyectoNegocio.ActualizarProyecto(proyectoDto);
-
-            if (actualizado)
+            if (id != proyectoDto.Id)
             {
-                return Ok("Proyecto Actulizado exitosamente"); // Indica que la operación fue exitosa
+                return BadRequest("Id del proyecto no Coincide");
             }
 
-            return NotFound("Proyecto No Encontrado"); // Indica que no se encontró el usuario o no se pudo actualizar
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Informacion Incorrecta");
+            }
+
+            try
+            {
+                var actualizado = await _proyectoNegocio.ActualizarProyecto(proyectoDto);
+
+                if (actualizado)
+                {
+                    return Ok("Proyecto actualizado con éxito");
+                }
+                else
+                {
+                    return BadRequest("El Proyecto no pudo ser actualizado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
 
