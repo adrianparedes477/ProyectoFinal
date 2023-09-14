@@ -8,8 +8,9 @@ namespace Core.DTO
 {
     public class UsuarioDTO
     {
-        public string Nombre { get; set; }
+        public int Id { get; set; }
+        public string NombreCompleto { get; set; }
         public int Dni { get; set; }
-        public string Tipo { get; set; } 
+        public string Tipo { get; set; }
     }
 }

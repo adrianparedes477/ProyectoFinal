@@ -20,7 +20,7 @@ namespace Infraestructura.Data.Seeds
                new Usuario
                {
                    Id = 1,
-                   Nombre = "Admin",
+                   NombreCompleto = "Admin",
                    Dni = 12345678,
                    Tipo = Usuario.TipoUsuario.Administrador,
                    Contrasenia = passwordManager.HashPassword("ContraseñaAdmin123")
@@ -28,7 +28,7 @@ namespace Infraestructura.Data.Seeds
                 new Usuario
                 {
                     Id = 2,
-                    Nombre = "Consultor",
+                    NombreCompleto = "Consultor",
                     Dni = 87654321,
                     Tipo = Usuario.TipoUsuario.Consultor,
                     Contrasenia = passwordManager.HashPassword("ContraseñaConsultor123")

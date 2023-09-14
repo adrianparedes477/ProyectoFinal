@@ -43,10 +43,23 @@ namespace API.Negocio
         public async Task<bool> ActualizarTrabajo(TrabajoDTO trabajoDTO)
         {
             var trabajo = _mapper.Map<Trabajo>(trabajoDTO);
-            _trabajoRepositorio.Actualizar(trabajo);
-            await _unidadTrabajo.Guardar();
-            return true;
+
+            // Verificar si el trabajo existe
+            var trabajoExiste = await _trabajoRepositorio.ObtenerPrimero(t => t.Id == trabajo.Id);
+
+            if (trabajoExiste != null)
+            {
+                _trabajoRepositorio.Actualizar(trabajo);
+                await _unidadTrabajo.Guardar();
+                return true;
+            }
+            else
+            {
+                throw new Exception("El trabajo no existe en la base de datos.");
+            }
         }
+
+
 
 
         public async Task<bool> EliminarTrabajo(int id)
