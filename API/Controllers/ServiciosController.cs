@@ -3,10 +3,12 @@ using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
+using Core.Negocio;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -67,15 +69,33 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarServicio(int id, [FromBody] ServicioDTO servicioDTO)
         {
-            // Llama al método de negocio para actualizar un usuario
-            var actualizado = await _servicioNegocio.ActualizarServicio(servicioDTO);
-
-            if (actualizado)
+            if (id != servicioDTO.Id)
             {
-                return Ok("Servicio Actulizado exitosamente"); // Indica que la operación fue exitosa
+                return BadRequest("Id del servicio no Coincide");
             }
 
-            return NotFound("Servicio No Encontrado"); // Indica que no se encontró el usuario o no se pudo actualizar
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Informacion Incorrecta");
+            }
+
+            try
+            {
+                var actualizado = await _servicioNegocio.ActualizarServicio(servicioDTO);
+
+                if (actualizado)
+                {
+                    return Ok("Servicio actualizado con éxito");
+                }
+                else
+                {
+                    return BadRequest("El Servicio no pudo ser actualizado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
 

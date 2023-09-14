@@ -43,8 +43,6 @@ namespace API.Negocio
         public async Task<bool> ActualizarTrabajo(TrabajoDTO trabajoDTO)
         {
             var trabajo = _mapper.Map<Trabajo>(trabajoDTO);
-
-            // Verificar si el trabajo existe
             var trabajoExiste = await _trabajoRepositorio.ObtenerPrimero(t => t.Id == trabajo.Id);
 
             if (trabajoExiste != null)

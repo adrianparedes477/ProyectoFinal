@@ -31,7 +31,7 @@ namespace Infraestructura.Data.Repositorio
             else
             {
 
-                throw new Exception("El trabajo no existe en la base de datos.");
+                throw new Exception("El Usuario no existe en la base de datos.");
             }
         }
     }
