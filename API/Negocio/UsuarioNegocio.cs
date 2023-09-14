@@ -2,6 +2,7 @@
 using Core.DTO;
 using Core.Entidades;
 using Core.Negocio.INegocio;
+using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -40,9 +41,20 @@ namespace Core.Negocio
         public async Task<bool> CrearUsuario(UsuarioDTO usuarioDTO)
         {
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
-            await _unidadTrabajo.Usuario.Agregar(usuario);
-            await _unidadTrabajo.Guardar();
-            return true;
+            // Verificar si el usuario existe
+            var usuarioExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Id == usuario.Id);
+            if (usuarioExiste != null)
+            {
+                await _unidadTrabajo.Usuario.Agregar(usuario);
+                await _unidadTrabajo.Guardar();
+                return true;
+            }
+            else
+            {
+                throw new Exception("El trabajo no existe en la base de datos.");
+            }
+
+
         }
 
         public async Task<bool> ActualizarUsuario(UsuarioDTO usuarioDTO)

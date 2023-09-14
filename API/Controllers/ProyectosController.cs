@@ -1,8 +1,10 @@
-﻿using API.Negocio.INegocio;
+﻿using API.Especificaciones;
+using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
 using Core.Negocio.INegocio;
+using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,19 +15,25 @@ namespace API.Controllers
     public class ProyectosController : ControllerBase
     {
         private readonly IProyectoNegocio _proyectoNegocio;
-        private readonly IMapper _mapper;
+        private readonly IUnidadTrabajo _unidadTrabajo;
 
-        public ProyectosController(IProyectoNegocio proyectoNegocio, IMapper mapper)
+        public ProyectosController(IProyectoNegocio proyectoNegocio, IUnidadTrabajo  unidadTrabajo)
         {
             _proyectoNegocio = proyectoNegocio;
-            _mapper = mapper;
+            _unidadTrabajo = unidadTrabajo; 
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProyectos()
+        public async Task<IActionResult> GetAllProyectos(int pageNumber = 1, int pageSize = 10)
         {
-            var proyectos = await _proyectoNegocio.GetAllProyectos();
-            return Ok(proyectos);
+            var parametros = new Parametros
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var paginaProyectos = await _unidadTrabajo.Proyecto.ObtenerTodosPaginado(parametros);
+            return Ok(paginaProyectos);
         }
 
         [HttpGet("{id}")]

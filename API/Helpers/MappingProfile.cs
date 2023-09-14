@@ -2,6 +2,7 @@
 using Core.Entidades;
 using Core.DTO;
 using static Core.Entidades.Usuario;
+using System.Globalization;
 
 public class MappingProfile : Profile
 {
@@ -20,11 +21,10 @@ public class MappingProfile : Profile
         CreateMap<Servicio, ServicioDTO>()
             .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado ? "Activo" : "No Activo"));
 
-        // Mapeo de Trabajo a TrabajoDTO
-        CreateMap<Trabajo, TrabajoDTO>()
-            .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.Fecha.ToString("yyyy-MM-dd")))
-            .ForMember(dest => dest.NombreProyecto, opt => opt.MapFrom(src => src.Proyecto.Nombre))
-            .ForMember(dest => dest.NombreServicio, opt => opt.MapFrom(src => src.Servicio.Descr));
+        CreateMap<TrabajoDTO, Trabajo>()
+        .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => DateTime.ParseExact(src.Fecha, "dd/MM/yyyy", CultureInfo.InvariantCulture)))
+        .ForMember(dest => dest.ValorHora, opt => opt.MapFrom(src => src.ValorHora))
+        .ForMember(dest => dest.Costo, opt => opt.MapFrom(src => src.Costo));
 
         // Mapeo de Usuario a UsuarioDTO
         CreateMap<Usuario, UsuarioDTO>()

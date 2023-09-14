@@ -8,7 +8,7 @@ namespace Core.DTO
 {
     public class UsuarioLoginDTO
     {
-        public string Nombre { get; set; }
+        public string NombreUsuario { get; set; }
 
         public string Contrasenia { get; set; }
 

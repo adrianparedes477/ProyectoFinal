@@ -16,7 +16,7 @@ namespace Core.Entidades
 
         [Required(ErrorMessage ="El nombre es Requerido")]
         [MaxLength(60,ErrorMessage ="El nombre no puede tener mas de 60 caracteres")]
-        public string Nombre { get; set; }
+        public string NombreCompleto { get; set; }
 
         [Required(ErrorMessage = "El Dni es Requerido")]
         [MaxLength(60, ErrorMessage = "El dni no puede tener mas de 60 caracteres")]
