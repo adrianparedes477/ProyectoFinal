@@ -6,6 +6,7 @@ using Core.Entidades;
 using Core.Negocio;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Infraestructura.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -19,10 +20,10 @@ namespace API.Controllers
         private readonly IProyectoNegocio _proyectoNegocio;
         private readonly IUnidadTrabajo _unidadTrabajo;
 
-        public ProyectosController(IProyectoNegocio proyectoNegocio, IUnidadTrabajo  unidadTrabajo)
+        public ProyectosController(IProyectoNegocio proyectoNegocio, IUnidadTrabajo unidadTrabajo)
         {
             _proyectoNegocio = proyectoNegocio;
-            _unidadTrabajo = unidadTrabajo; 
+            _unidadTrabajo = unidadTrabajo;
         }
 
         [HttpGet]
@@ -35,21 +36,21 @@ namespace API.Controllers
             };
 
             var paginaProyectos = await _unidadTrabajo.Proyecto.ObtenerTodosPaginado(parametros);
-            return Ok(paginaProyectos);
+            return ResponseFactory.CreateSuccessResponse(200, paginaProyectos);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProyectoById(int id)
         {
             var proyecto = await _proyectoNegocio.GetProyectoById(id);
-            return Ok(proyecto);
+            return ResponseFactory.CreateSuccessResponse(200, proyecto);
         }
 
         [HttpGet("proyectosPorEstado/{estado}")]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
         {
             var proyecto = await _proyectoNegocio.GetProyectosPorEstado(estado);
-            return Ok(proyecto);
+            return ResponseFactory.CreateSuccessResponse(200, proyecto);
         }
 
         [HttpPost]
@@ -59,10 +60,10 @@ namespace API.Controllers
 
             if (creado)
             {
-                return Ok("Proyecto creado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Proyecto creado exitosamente");
             }
 
-            return BadRequest("No se pudo crear el Proyecto");
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Proyecto");
         }
 
         [HttpPut("{id}")]
@@ -70,12 +71,12 @@ namespace API.Controllers
         {
             if (id != proyectoDto.Id)
             {
-                return BadRequest("Id del proyecto no Coincide");
+                return ResponseFactory.CreateErrorResponse(400, "Id del proyecto no Coincide");
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("Informacion Incorrecta");
+                return ResponseFactory.CreateErrorResponse(400, "Informacion Incorrecta");
             }
 
             try
@@ -84,20 +85,18 @@ namespace API.Controllers
 
                 if (actualizado)
                 {
-                    return Ok("Proyecto actualizado con éxito");
+                    return ResponseFactory.CreateSuccessResponse(200, "Proyecto actualizado con éxito");
                 }
                 else
                 {
-                    return BadRequest("El Proyecto no pudo ser actualizado");
+                    return ResponseFactory.CreateErrorResponse(400, "El Proyecto no pudo ser actualizado");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseFactory.CreateErrorResponse(500, ex.Message);
             }
         }
-
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarProyecto(int id)
@@ -106,11 +105,10 @@ namespace API.Controllers
 
             if (eliminado)
             {
-                return Ok("Proyecto eliminado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Proyecto eliminado exitosamente");
             }
 
-            return NotFound("Proyecto no encontrado");
+            return ResponseFactory.CreateErrorResponse(404, "Proyecto no encontrado");
         }
     }
-
 }

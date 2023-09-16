@@ -25,7 +25,7 @@ namespace Core.Entidades
         public TipoUsuario Tipo { get; set; }
 
         [Required(ErrorMessage = "La contraseña  es Requerida")]
-        [MaxLength(60, ErrorMessage = "El contraseña no puede tener mas de 60 caracteres")]
+        [MaxLength(64, ErrorMessage = "El contraseña no puede tener mas de 64 caracteres")]
         public string Contrasenia { get; set; }
 
         public enum TipoUsuario

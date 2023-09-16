@@ -10,7 +10,7 @@ namespace Core.DTO
     {
         public int Id { get; set; }
         public string Descr { get; set; }
-        public string Estado { get; set; } // Cambio de bool a string
+        public bool Estado { get; set; } 
         public decimal ValorHora { get; set; }
     }
 }

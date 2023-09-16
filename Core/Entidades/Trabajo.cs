@@ -14,8 +14,8 @@ namespace Core.Entidades
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage ="La fecha es requerida")]
-        public DateTime Fecha { get; set; }
+        
+        public DateTime? Fecha { get; set; }
 
         [Required(ErrorMessage = "El CodProyecto es requerido")]
         public int CodProyecto { get; set; }

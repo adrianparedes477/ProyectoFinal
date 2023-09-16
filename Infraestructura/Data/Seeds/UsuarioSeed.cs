@@ -14,7 +14,7 @@ namespace Infraestructura.Data.Seeds
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-            PasswordManager passwordManager = new PasswordManager();
+            
 
             builder.HasData(
                new Usuario
@@ -23,7 +23,7 @@ namespace Infraestructura.Data.Seeds
                    NombreCompleto = "Admin",
                    Dni = 12345678,
                    Tipo = Usuario.TipoUsuario.Administrador,
-                   Contrasenia = passwordManager.HashPassword("ContraseñaAdmin123")
+                   Contrasenia = PasswordEncryptHelper.EncryptPassword("ContraseñaAdmin123")
                },
                 new Usuario
                 {
@@ -31,7 +31,7 @@ namespace Infraestructura.Data.Seeds
                     NombreCompleto = "Consultor",
                     Dni = 87654321,
                     Tipo = Usuario.TipoUsuario.Consultor,
-                    Contrasenia = passwordManager.HashPassword("ContraseñaConsultor123")
+                    Contrasenia = PasswordEncryptHelper.EncryptPassword("ContraseñaConsultor123")
                 }
             );
         }

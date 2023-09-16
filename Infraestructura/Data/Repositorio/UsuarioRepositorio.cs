@@ -1,5 +1,7 @@
-﻿using Core.Entidades;
+﻿using API.Helpers;
+using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Infraestructura.Data.Seeds;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,20 +21,24 @@ namespace Infraestructura.Data.Repositorio
 
         public void Actualizar(Usuario usuario)
         {
-            var usuarioDB = _db.Usuario.FirstOrDefault(u=>u.Id == usuario.Id);
+            var usuarioDB = _db.Usuario.FirstOrDefault(u => u.Id == usuario.Id);
 
-            if (usuarioDB != null) 
+            if (usuarioDB != null)
             {
                 usuarioDB.NombreCompleto = usuario.NombreCompleto;
                 usuarioDB.Dni = usuario.Dni;
                 usuarioDB.Tipo = usuario.Tipo;
+
+                // Encripta la contraseña antes de guardarla
+                usuarioDB.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);
+
                 _db.SaveChanges();
             }
             else
             {
-
                 throw new Exception("El Usuario no existe en la base de datos.");
             }
         }
+
     }
 }
