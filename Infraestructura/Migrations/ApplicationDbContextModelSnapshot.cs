@@ -142,8 +142,8 @@ namespace Infraestructura.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("Fecha")
+                        .HasColumnType("date");
 
                     b.Property<decimal>("ValorHora")
                         .HasMaxLength(60)
@@ -181,8 +181,8 @@ namespace Infraestructura.Migrations
 
                     b.Property<string>("Contrasenia")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<int>("Dni")
                         .HasMaxLength(60)
@@ -206,7 +206,7 @@ namespace Infraestructura.Migrations
                         new
                         {
                             Id = 1,
-                            Contrasenia = "$2a$10$tY1kk65X7.wUWHuK2ezLkuMxjrCbhKOD9rcRmGWooYifOvQbtp2kW",
+                            Contrasenia = "45e74d58cd55f7a495ba9965402e0694f76eb760e7d0aadaf9e34b694a5cf16e",
                             Dni = 12345678,
                             NombreCompleto = "Admin",
                             Tipo = 1
@@ -214,7 +214,7 @@ namespace Infraestructura.Migrations
                         new
                         {
                             Id = 2,
-                            Contrasenia = "$2a$10$Is8PoY3MdfPQyMOc50SSjOwelIh0s4zX2S34MLeOb6KsQvT1DnQDe",
+                            Contrasenia = "0743985993bc77c52297bef8342de610146d8a5f356b5963dec0ed0f95acc6c9",
                             Dni = 87654321,
                             NombreCompleto = "Consultor",
                             Tipo = 2
