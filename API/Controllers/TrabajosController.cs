@@ -3,6 +3,7 @@ using API.Negocio.INegocio;
 using Core.DTO;
 using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Infraestructura.Response;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -31,7 +32,7 @@ namespace API.Controllers
             };
 
             var paginaTrabajos = await _unidadTrabajo.Trabajo.ObtenerTodosPaginado(parametros, incluirPropiedades: "Proyecto,Servicio");
-            return Ok(paginaTrabajos);
+            return ResponseFactory.CreateSuccessResponse(200, paginaTrabajos);
         }
 
         [HttpGet("{id}")]
@@ -41,40 +42,39 @@ namespace API.Controllers
 
             if (trabajo == null)
             {
-                return NotFound();
+                return ResponseFactory.CreateErrorResponse(404, "Trabajo no encontrado");
             }
 
-            return Ok(trabajo);
+            return ResponseFactory.CreateSuccessResponse(200, trabajo);
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CrearTrabajo(TrabajoDTO trabajoDTO)
+        public async Task<IActionResult> CrearTrabajo([FromBody] TrabajoDTO trabajoDTO)
         {
             try
             {
                 await _trabajoNegocio.CrearTrabajo(trabajoDTO);
-                return true;
+                return ResponseFactory.CreateSuccessResponse(200, "Trabjo creado exitosamente");
             }
             catch (Exception ex)
             {
-                // Maneja la excepción según tus necesidades
-                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
             }
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ActualizarTrabajo(int id,[FromBody] TrabajoDTO trabajoDTO)
+        public async Task<IActionResult> ActualizarTrabajo(int id, [FromBody] TrabajoDTO trabajoDTO)
         {
             if (id != trabajoDTO.Id)
             {
-                return BadRequest("Id del Trabajo no Coincide");
+                return ResponseFactory.CreateErrorResponse(400, "Id del Trabajo no coincide");
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("Informacion Incorrecta");
+                return ResponseFactory.CreateErrorResponse(400, "Información incorrecta");
             }
 
             try
@@ -83,21 +83,21 @@ namespace API.Controllers
 
                 if (actualizado)
                 {
-                    return Ok("Trabajo actualizado con éxito");
+                    return ResponseFactory.CreateSuccessResponse(200, "Trabajo actualizado con éxito");
                 }
                 else
                 {
-                    return BadRequest("El trabajo no pudo ser actualizado");
+                    return ResponseFactory.CreateErrorResponse(400, "El trabajo no pudo ser actualizado");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> EliminarTrabajo(int id)
+        public async Task<IActionResult> EliminarTrabajo(int id)
         {
             try
             {
@@ -105,16 +105,16 @@ namespace API.Controllers
 
                 if (!eliminado)
                 {
-                    return NotFound("Trabajo no encontrado");
+                    return ResponseFactory.CreateErrorResponse(404, "Trabajo no encontrado");
                 }
 
-                return true;
+                return ResponseFactory.CreateSuccessResponse(200, true);
             }
             catch (Exception ex)
             {
-                // Maneja la excepción según tus necesidades
-                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+                return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
             }
         }
+
     }
 }

@@ -6,6 +6,7 @@ using Core.Entidades;
 using Core.Negocio;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Infraestructura.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -35,35 +36,39 @@ namespace API.Controllers
             };
 
             var paginaServicios = await _unidadTrabajo.Servicio.ObtenerTodosPaginado(parametros);
-            return Ok(paginaServicios);
+            return ResponseFactory.CreateSuccessResponse(200, paginaServicios);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetServicioById(int id)
         {
             var servicio = await _servicioNegocio.GetServicioById(id);
-            return Ok(servicio);
+            if (servicio == null)
+            {
+                return ResponseFactory.CreateErrorResponse(404, "Servicio no encontrado");
+            }
+
+            return ResponseFactory.CreateSuccessResponse(200, servicio);
         }
 
         [HttpGet("activos")]
         public async Task<IActionResult> GetServiciosActivos()
         {
             var serviciosActivos = await _servicioNegocio.GetServiciosActivos();
-            return Ok(serviciosActivos);
+            return ResponseFactory.CreateSuccessResponse(200, serviciosActivos);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> CrearProyecto([FromBody] ServicioDTO servicioDTO)
+        public async Task<IActionResult> CrearServicio([FromBody] ServicioDTO servicioDTO)
         {
             var creado = await _servicioNegocio.CrearServicio(servicioDTO);
 
             if (creado)
             {
-                return Ok("Servicio creado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Servicio creado exitosamente");
             }
 
-            return BadRequest("No se pudo crear el Servicio");
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Servicio");
         }
 
         [HttpPut("{id}")]
@@ -71,12 +76,12 @@ namespace API.Controllers
         {
             if (id != servicioDTO.Id)
             {
-                return BadRequest("Id del servicio no Coincide");
+                return ResponseFactory.CreateErrorResponse(400, "Id del servicio no Coincide");
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("Informacion Incorrecta");
+                return ResponseFactory.CreateErrorResponse(400, "Informacion Incorrecta");
             }
 
             try
@@ -85,11 +90,11 @@ namespace API.Controllers
 
                 if (actualizado)
                 {
-                    return Ok("Servicio actualizado con éxito");
+                    return ResponseFactory.CreateSuccessResponse(200, "Servicio actualizado con éxito");
                 }
                 else
                 {
-                    return BadRequest("El Servicio no pudo ser actualizado");
+                    return ResponseFactory.CreateErrorResponse(400, "El Servicio no pudo ser actualizado");
                 }
             }
             catch (Exception ex)
@@ -98,8 +103,6 @@ namespace API.Controllers
             }
         }
 
-
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarServicio(int id)
         {
@@ -107,11 +110,12 @@ namespace API.Controllers
 
             if (eliminado)
             {
-                return Ok("Servicio eliminado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Servicio eliminado exitosamente");
             }
 
-            return NotFound("Servicio no encontrado");
+            return ResponseFactory.CreateErrorResponse(404, "Servicio no encontrado");
         }
+
     }
 
 }

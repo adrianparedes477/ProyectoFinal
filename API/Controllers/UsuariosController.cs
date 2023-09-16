@@ -3,6 +3,7 @@ using AutoMapper;
 using Core.DTO;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Infraestructura.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -32,15 +33,18 @@ namespace API.Controllers
             };
 
             var paginaUsuarios = await _unidadTrabajo.Usuario.ObtenerTodosPaginado(parametros);
-            return Ok(paginaUsuarios);
+            return ResponseFactory.CreateSuccessResponse(200, paginaUsuarios);
         }
-
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUsuarioById(int id)
         {
             var usuario = await _usuarioNegocio.GetUsuarioById(id);
-            return Ok(usuario);
+            if (usuario == null)
+            {
+                return ResponseFactory.CreateErrorResponse(404, "Usuario no encontrado");
+            }
+            return ResponseFactory.CreateSuccessResponse(200, usuario);
         }
 
         [HttpPost]
@@ -50,24 +54,23 @@ namespace API.Controllers
 
             if (creado)
             {
-                return Ok("Usuario creado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(201, "Usuario creado exitosamente");
             }
 
-            return BadRequest("No se pudo crear el usuario");
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el usuario");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] UsuarioDTO usuarioDTO)
         {
-
             if (id != usuarioDTO.Id)
             {
-                return BadRequest("Id del usuario no Coincide");
+                return ResponseFactory.CreateErrorResponse(400, "Id del usuario no coincide");
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("Informacion Incorrecta");
+                return ResponseFactory.CreateErrorResponse(400, "Informacion incorrecta");
             }
 
             try
@@ -76,20 +79,18 @@ namespace API.Controllers
 
                 if (actualizado)
                 {
-                    return Ok("Usuario actualizado con éxito");
+                    return ResponseFactory.CreateSuccessResponse(200, "Usuario actualizado con éxito");
                 }
                 else
                 {
-                    return BadRequest("El Usuario no pudo ser actualizado");
+                    return ResponseFactory.CreateErrorResponse(400, "El Usuario no pudo ser actualizado");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
             }
         }
-
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarUsuario(int id)
@@ -98,11 +99,11 @@ namespace API.Controllers
 
             if (eliminado)
             {
-                return Ok("Usuario eliminado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Usuario eliminado exitosamente");
             }
 
-            return NotFound("Usuario no encontrado");
+            return ResponseFactory.CreateErrorResponse(404, "Usuario no encontrado");
         }
-    }
 
+    }
 }
