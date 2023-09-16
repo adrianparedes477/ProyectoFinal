@@ -4,6 +4,7 @@ using Core.Entidades;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
+using Infraestructura.Data.Seeds;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -41,21 +42,26 @@ namespace Core.Negocio
         public async Task<bool> CrearUsuario(UsuarioDTO usuarioDTO)
         {
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
-            // Verificar si el usuario existe
-            var usuarioExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Id == usuario.Id);
-            if (usuarioExiste != null)
+
+            // Verificar si el usuario NO existe
+            var usuarioNoExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Dni == usuario.Dni);
+
+            if (usuarioNoExiste == null)
             {
+                // Encriptar la contraseña antes de guardarla
+                usuario.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);
+
                 await _unidadTrabajo.Usuario.Agregar(usuario);
                 await _unidadTrabajo.Guardar();
                 return true;
             }
             else
             {
-                throw new Exception("El Usuario no existe en la base de datos.");
+                throw new Exception("El Usuario ya existe en la base de datos.");
             }
-
-
         }
+
+
 
         public async Task<bool> ActualizarUsuario(UsuarioDTO usuarioDTO)
         {

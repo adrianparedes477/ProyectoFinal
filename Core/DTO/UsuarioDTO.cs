@@ -11,6 +11,8 @@ namespace Core.DTO
         public int Id { get; set; }
         public string NombreCompleto { get; set; }
         public int Dni { get; set; }
+
+        public string Contrasenia { get; set; }
         public string Tipo { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Infraestructura.Data.Configuracion
 
             builder.Property(x=>x.NombreCompleto).IsRequired().HasMaxLength(60);
             builder.Property(x => x.Dni).IsRequired().HasMaxLength(60);
-            builder.Property(x=>x.Contrasenia).IsRequired().HasMaxLength(60);
+            builder.Property(x=>x.Contrasenia).IsRequired().HasMaxLength(64);
             builder.Property(x => x.Tipo).HasDefaultValue(Usuario.TipoUsuario.Consultor);
         }
     }

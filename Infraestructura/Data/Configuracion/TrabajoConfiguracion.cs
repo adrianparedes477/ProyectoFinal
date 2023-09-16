@@ -16,9 +16,11 @@ namespace Infraestructura.Data.Configuracion
         {
             
 
-            builder.HasKey(t => t.Id); 
+            builder.HasKey(t => t.Id);
 
-            builder.Property(t => t.Fecha).IsRequired();
+            builder.Property(t => t.Fecha)
+            .IsRequired(false) // Permite valores nulos
+            .HasColumnType("date"); // Especifica el tipo de dato si es necesario
             builder.Property(t => t.CodProyecto).IsRequired(); 
             builder.Property(t => t.CodServicio).IsRequired(); 
             builder.Property(t => t.CantHoras).IsRequired().HasMaxLength(60); 
