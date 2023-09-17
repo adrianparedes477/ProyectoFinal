@@ -1,5 +1,4 @@
-﻿using API.Helpers;
-using Core.Entidades;
+﻿using Core.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
