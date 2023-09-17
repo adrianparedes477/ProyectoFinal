@@ -26,14 +26,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
         {
-            var parametros = new Parametros
-            {
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-
-            var paginaUsuarios = await _unidadTrabajo.Usuario.ObtenerTodosPaginado(parametros);
-            return ResponseFactory.CreateSuccessResponse(200, paginaUsuarios);
+            var usuariosDto = await _usuarioNegocio.GetAllUsuarios(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, usuariosDto);
         }
 
         [HttpGet("{id}")]
@@ -42,22 +36,27 @@ namespace API.Controllers
             var usuario = await _usuarioNegocio.GetUsuarioById(id);
             if (usuario == null)
             {
-                return ResponseFactory.CreateErrorResponse(404, "Usuario no encontrado");
+                return NotFound("El Usuario no fue encontrado");
             }
             return ResponseFactory.CreateSuccessResponse(200, usuario);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearUsuario([FromBody] UsuarioDTO usuarioDTO)
+        public async Task<IActionResult> CrearUsuario([FromBody] UsuarioReedDTO usuarioDTO)
         {
-            var creado = await _usuarioNegocio.CrearUsuario(usuarioDTO);
+            var existeUsuario = await _unidadTrabajo.Usuario.Existe(p => p.NombreCompleto == usuarioDTO.NombreCompleto);
 
+            if (existeUsuario)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Ya existe un Usuario con ese nombre.");
+            }
+            var creado = await _usuarioNegocio.CrearUsuario(usuarioDTO);
             if (creado)
             {
-                return ResponseFactory.CreateSuccessResponse(201, "Usuario creado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Usuario creado exitosamente");
             }
 
-            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el usuario");
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Usuario");
         }
 
         [HttpPut("{id}")]

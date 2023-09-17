@@ -4,10 +4,10 @@ namespace API.Negocio.INegocio
 {
     public interface ITrabajoNegocio
     {
-        Task<IEnumerable<TrabajoDTO>> GetAllTrabajos();
-        Task<TrabajoDTO> GetTrabajoById(int id);
-        Task<bool> CrearTrabajo(TrabajoDTO trabajoDTO);
-        Task<bool> ActualizarTrabajo(TrabajoDTO trabajoDTO);
+        Task<IEnumerable<TrabajoReedDTO>> GetAllTrabajos(int pageNumber, int pageSize);
+        Task<TrabajoReedDTO> GetTrabajoById(int id);
+        Task<bool> CrearTrabajo(TrabajoCrearDTO trabajoDTO, int proyectoId, int servicioId);
+        Task<bool> ActualizarTrabajo(TrabajoActualizarDTO trabajoDTO);
         Task<bool> EliminarTrabajo(int id);
     }
 }

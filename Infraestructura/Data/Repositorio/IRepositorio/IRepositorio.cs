@@ -23,8 +23,10 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
            Parametros parametros,
            Expression<Func<T, bool>> filtro = null,
            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-           string incluirPropiedades = null  // "Compania,Cargo"
+           string incluirPropiedades = null  
         );
+
+        Task<bool> Existe(Expression<Func<T, bool>> filtro);
 
         Task<T> ObtenerPrimero(
             Expression<Func<T, bool>> filtro = null,

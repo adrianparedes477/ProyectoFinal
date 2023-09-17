@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Core.DTO
 {
-    public class ServicioReedDTO
+    public class ServicioDTO
     {
+        public int Id { get; set; }
         public string Descr { get; set; }
         public bool Estado { get; set; } 
         public decimal ValorHora { get; set; }

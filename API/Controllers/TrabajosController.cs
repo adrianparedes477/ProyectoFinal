@@ -2,6 +2,7 @@
 using API.Negocio.INegocio;
 using Core.DTO;
 using Core.Entidades;
+using Core.Negocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Mvc;
@@ -25,14 +26,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTrabajos(int pageNumber = 1, int pageSize = 10)
         {
-            var parametros = new Parametros
-            {
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-
-            var paginaTrabajos = await _unidadTrabajo.Trabajo.ObtenerTodosPaginado(parametros, incluirPropiedades: "Proyecto,Servicio");
-            return ResponseFactory.CreateSuccessResponse(200, paginaTrabajos);
+            var trabajosDto = await _trabajoNegocio.GetAllTrabajos(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, trabajosDto);
         }
 
         [HttpGet("{id}")]
@@ -42,30 +37,29 @@ namespace API.Controllers
 
             if (trabajo == null)
             {
-                return ResponseFactory.CreateErrorResponse(404, "Trabajo no encontrado");
+                return NotFound("El proyecto no fue encontrado");
             }
 
             return ResponseFactory.CreateSuccessResponse(200, trabajo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearTrabajo([FromBody] TrabajoDTO trabajoDTO)
+        public async Task<IActionResult> CrearTrabajo([FromBody] TrabajoCrearDTO trabajoDto, [FromQuery] int proyectoId, [FromQuery] int servicioId)
         {
-            try
+            var creado = await _trabajoNegocio.CrearTrabajo(trabajoDto, proyectoId, servicioId);
+
+            if (creado)
             {
-                await _trabajoNegocio.CrearTrabajo(trabajoDTO);
-                return ResponseFactory.CreateSuccessResponse(200, "Trabjo creado exitosamente");
+                return ResponseFactory.CreateSuccessResponse(200, "Trabajo creado exitosamente");
             }
-            catch (Exception ex)
-            {
-                return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
-            }
+
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Trabajo");
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ActualizarTrabajo(int id, [FromBody] TrabajoDTO trabajoDTO)
+        public async Task<IActionResult> ActualizarTrabajo(int id, [FromBody] TrabajoActualizarDTO trabajoDTO)
         {
             if (id != trabajoDTO.Id)
             {
@@ -99,21 +93,14 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarTrabajo(int id)
         {
-            try
-            {
-                var eliminado = await _trabajoNegocio.EliminarTrabajo(id);
+            var eliminado = await _trabajoNegocio.EliminarTrabajo(id);
 
-                if (!eliminado)
-                {
-                    return ResponseFactory.CreateErrorResponse(404, "Trabajo no encontrado");
-                }
-
-                return ResponseFactory.CreateSuccessResponse(200, true);
-            }
-            catch (Exception ex)
+            if (eliminado)
             {
-                return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
+                return ResponseFactory.CreateSuccessResponse(200, "Trabajo eliminado exitosamente");
             }
+
+            return ResponseFactory.CreateErrorResponse(404, "Trabajo no encontrado");
         }
 
     }
