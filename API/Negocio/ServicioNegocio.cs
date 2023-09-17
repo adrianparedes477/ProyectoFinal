@@ -1,4 +1,5 @@
-﻿using API.Negocio.INegocio;
+﻿using API.Especificaciones;
+using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
@@ -20,19 +21,32 @@ namespace API.Negocio
             _servicioRepositorio = servicioRepositorio;
         }
 
-        public async Task<IEnumerable<ServicioDTO>> GetAllServicios()
+        public async Task<IEnumerable<ServicioReedDTO>> GetAllServicios(int pageNumber, int pageSize)
         {
-            var servicios = await _unidadTrabajo.Servicio.GetAll();
-            return _mapper.Map<IEnumerable<ServicioDTO>>(servicios);
+            var parametros = new Parametros
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var paginaServicios = await _unidadTrabajo.Servicio.ObtenerTodosPaginado(parametros);
+            return _mapper.Map<IEnumerable<ServicioReedDTO>>(paginaServicios);
         }
 
-        public async Task<ServicioDTO> GetServicioById(int id)
+        public async Task<ServicioReedDTO> GetServicioById(int id)
         {
             var servicio = await _unidadTrabajo.Servicio.GetById(id);
-            return _mapper.Map<ServicioDTO>(servicio);
+
+            if (servicio == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<ServicioReedDTO>(servicio);
         }
 
-        public async Task<bool> CrearServicio(ServicioDTO servicioDTO)
+
+        public async Task<bool> CrearServicio(ServicioReedDTO servicioDTO)
         {
             var servicio = _mapper.Map<Servicio>(servicioDTO);
             await _unidadTrabajo.Servicio.Agregar(servicio);
@@ -42,12 +56,26 @@ namespace API.Negocio
 
         public async Task<bool> ActualizarServicio(ServicioDTO servicioDTO)
         {
-            var servicio = _mapper.Map<Servicio>(servicioDTO);
-            var servicioExiste = await _servicioRepositorio.ObtenerPrimero(t => t.Id == servicio.Id);
+            var servicioExiste = await _servicioRepositorio.ObtenerPrimero(t => t.Id == servicioDTO.Id);
 
             if (servicioExiste != null)
             {
-                _servicioRepositorio.Actualizar(servicio); 
+                if (!string.IsNullOrEmpty(servicioDTO.Descr))
+                {
+                    servicioExiste.Descr = servicioDTO.Descr;
+                }
+
+                if (servicioDTO.Estado != default(bool))
+                {
+                    servicioExiste.Estado = servicioDTO.Estado;
+                }
+
+                if (servicioDTO.ValorHora != default(decimal))
+                {
+                    servicioExiste.ValorHora = servicioDTO.ValorHora;
+                }
+
+                _servicioRepositorio.Actualizar(servicioExiste);
                 await _unidadTrabajo.Guardar();
                 return true;
             }
@@ -55,10 +83,7 @@ namespace API.Negocio
             {
                 throw new Exception("El Servicio no existe en la base de datos.");
             }
-
         }
-
-        
 
         public async Task<bool> EliminarServicio(int id)
         {

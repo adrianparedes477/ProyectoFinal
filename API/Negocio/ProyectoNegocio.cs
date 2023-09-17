@@ -1,4 +1,5 @@
-﻿using API.Negocio.INegocio;
+﻿using API.Especificaciones;
+using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Entidades.Proyecto;
 
 namespace Core.Negocio
 {
@@ -27,20 +29,39 @@ namespace Core.Negocio
             _proyectoRepositorio = proyectoRepositorio;
         }
 
-        public async Task<IEnumerable<ProyectoDto>> GetAllProyectos()
+        public async Task<IEnumerable<ProyectoReedDto>> GetAllProyectos(int pageNumber, int pageSize)
         {
-            var proyecto = await _unidadTrabajo.Proyecto.GetAll();
-            return _mapper.Map<IEnumerable<ProyectoDto>>(proyecto);
+            var parametros = new Parametros
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var paginaProyectos = await _unidadTrabajo.Proyecto.ObtenerTodosPaginado(parametros);
+            return _mapper.Map<IEnumerable<ProyectoReedDto>>(paginaProyectos);
         }
 
-        public async Task<ProyectoDto> GetProyectoById(int id)
+        public async Task<ProyectoReedDto> GetProyectoById(int id)
         {
             var proyecto = await _unidadTrabajo.Proyecto.GetById(id);
-            return _mapper.Map<ProyectoDto>(proyecto);
+
+            if (proyecto == null)
+            {
+                return null; 
+            }
+
+            return _mapper.Map<ProyectoReedDto>(proyecto);
         }
 
-        public async Task<bool> CrearProyecto(ProyectoDto proyectoDto)
+        public async Task<bool> CrearProyecto(ProyectoReedDto proyectoDto)
         {
+            var existeProyecto = await _unidadTrabajo.Proyecto.Existe(p => p.Nombre == proyectoDto.Nombre);
+
+            if (existeProyecto)
+            {
+                throw new Exception("Ya existe un proyecto con ese nombre.");
+            }
+
             var proyecto = _mapper.Map<Proyecto>(proyectoDto);
             await _unidadTrabajo.Proyecto.Agregar(proyecto);
             await _unidadTrabajo.Guardar();
@@ -49,12 +70,35 @@ namespace Core.Negocio
 
         public async Task<bool> ActualizarProyecto(ProyectoDto proyectoDto)
         {
-            var proyecto = _mapper.Map<Proyecto>(proyectoDto);
-            var proyectoExiste = await _proyectoRepositorio.ObtenerPrimero(t => t.Id == proyecto.Id);
+            var proyectoExiste = await _proyectoRepositorio.ObtenerPrimero(t => t.Id == proyectoDto.Id);
 
             if (proyectoExiste != null)
             {
-                _proyectoRepositorio.Actualizar(proyecto); 
+                // Verificar si proyectoDto.Nombre no es nulo o vacío antes de actualizar
+                if (!string.IsNullOrEmpty(proyectoDto.Nombre))
+                {
+                    proyectoExiste.Nombre = proyectoDto.Nombre;
+                }
+
+                // Verificar si proyectoDto.Direccion no es nulo o vacío antes de actualizar
+                if (!string.IsNullOrEmpty(proyectoDto.Direccion))
+                {
+                    proyectoExiste.Direccion = proyectoDto.Direccion;
+                }
+
+                // Verificar si proyectoDto.Estado no es nulo o vacío antes de actualizar
+                if (!string.IsNullOrEmpty(proyectoDto.Estado))
+                {
+                    if (Enum.TryParse(typeof(EstadoProyecto), proyectoDto.Estado, out var estado))
+                    {
+                        proyectoExiste.Estado = (EstadoProyecto)estado;
+                    }
+                    else
+                    {
+                        throw new Exception("El valor del estado no es válido.");
+                    }
+                }
+                _proyectoRepositorio.Actualizar(proyectoExiste);
                 await _unidadTrabajo.Guardar();
                 return true;
             }
@@ -62,8 +106,8 @@ namespace Core.Negocio
             {
                 throw new Exception("El Proyecto no existe en la base de datos.");
             }
-
         }
+
 
         public async Task<bool> EliminarProyecto(int id)
         {
@@ -79,7 +123,7 @@ namespace Core.Negocio
             return false;
         }
 
-        public async Task<IEnumerable<ProyectoDto>> GetProyectosPorEstado(int estado)
+        public async Task<IEnumerable<ProyectoReedDto>> GetProyectosPorEstado(int estado)
         {
             var estadoProyecto = (Proyecto.EstadoProyecto)estado;
             var proyectosPorEstado = await _unidadTrabajo.Proyecto.GetAll(
@@ -87,7 +131,7 @@ namespace Core.Negocio
                 isTracking: false
             );
 
-            var proyectosDto = _mapper.Map<IEnumerable<ProyectoDto>>(proyectosPorEstado);
+            var proyectosDto = _mapper.Map<IEnumerable<ProyectoReedDto>>(proyectosPorEstado);
 
             return proyectosDto;
         }

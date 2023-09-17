@@ -9,9 +9,9 @@ namespace Core.Negocio.INegocio
 {
     public interface IUsuarioNegocio
     {
-        Task<IEnumerable<UsuarioDTO>> GetAllUsuarios();
-        Task<UsuarioDTO> GetUsuarioById(int id);
-        Task<bool> CrearUsuario(UsuarioDTO usuarioDTO);
+        Task<IEnumerable<UsuarioReedDTO>> GetAllUsuarios(int pageNumber, int pageSize);
+        Task<UsuarioReedDTO> GetUsuarioById(int id);
+        Task<bool> CrearUsuario(UsuarioReedDTO usuarioDTO);
         Task<bool> ActualizarUsuario(UsuarioDTO usuarioDTO);
         Task<bool> EliminarUsuario(int id);
     }

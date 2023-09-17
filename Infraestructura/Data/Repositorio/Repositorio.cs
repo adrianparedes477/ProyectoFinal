@@ -22,7 +22,10 @@ namespace Infraestructura.Data.Repositorio
             await dbSet.AddAsync(entidad); // insert into Table
         }
 
-        
+        public async Task<bool> Existe(Expression<Func<T, bool>> filtro)
+        {
+            return await dbSet.AnyAsync(filtro);
+        }
 
         public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> filtro = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
@@ -77,6 +80,8 @@ namespace Infraestructura.Data.Repositorio
             return await query.FirstOrDefaultAsync();
         }
 
+
+
         public async Task<PagedList<T>> ObtenerTodosPaginado(Parametros parametros,
          Expression<Func<T, bool>> filtro = null, Func<IQueryable<T>,
          IOrderedQueryable<T>> orderBy = null, string incluirPropiedades = null)
@@ -101,9 +106,6 @@ namespace Infraestructura.Data.Repositorio
 
             return PagedList<T>.ToPagedList(query, parametros.PageNumber, parametros.PageSize);
         }
-
-        
-
 
         public void Remover(T entidad)
         {

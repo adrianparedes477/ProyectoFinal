@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using API.Especificaciones;
+using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
 using Core.Negocio.INegocio;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Core.Entidades.Usuario;
 
 namespace Core.Negocio
 {
@@ -27,50 +29,85 @@ namespace Core.Negocio
             _usuarioRepositorio = usuarioRepositorio;
         }
 
-        public async Task<IEnumerable<UsuarioDTO>> GetAllUsuarios()
+        public async Task<IEnumerable<UsuarioReedDTO>> GetAllUsuarios(int pageNumber, int pageSize)
         {
-            var usuarios = await _unidadTrabajo.Usuario.GetAll();
-            return _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
+            var parametros = new Parametros
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var paginaUsuarios = await _unidadTrabajo.Usuario.ObtenerTodosPaginado(parametros);
+            return _mapper.Map<IEnumerable<UsuarioReedDTO>>(paginaUsuarios);
+
         }
 
-        public async Task<UsuarioDTO> GetUsuarioById(int id)
+        public async Task<UsuarioReedDTO> GetUsuarioById(int id)
         {
             var usuario = await _unidadTrabajo.Usuario.GetById(id);
-            return _mapper.Map<UsuarioDTO>(usuario);
+            if (usuario == null)
+            {
+                return null;
+            }
+            return _mapper.Map<UsuarioReedDTO>(usuario);
+
         }
 
-        public async Task<bool> CrearUsuario(UsuarioDTO usuarioDTO)
+        public async Task<bool> CrearUsuario(UsuarioReedDTO usuarioDTO)
         {
+            var existeUsuario = await _unidadTrabajo.Usuario.Existe(p => p.NombreCompleto == usuarioDTO.NombreCompleto);
+
+            if (existeUsuario)
+            {
+                throw new Exception("Ya existe un usuario con ese nombre.");
+            }
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
-
-            // Verificar si el usuario NO existe
-            var usuarioNoExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Dni == usuario.Dni);
-
-            if (usuarioNoExiste == null)
-            {
-                // Encriptar la contraseña antes de guardarla
-                usuario.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);
-
-                await _unidadTrabajo.Usuario.Agregar(usuario);
-                await _unidadTrabajo.Guardar();
-                return true;
-            }
-            else
-            {
-                throw new Exception("El Usuario ya existe en la base de datos.");
-            }
+            usuario.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);
+            await _unidadTrabajo.Usuario.Agregar(usuario);
+            await _unidadTrabajo.Guardar();
+            return true;
         }
 
 
 
         public async Task<bool> ActualizarUsuario(UsuarioDTO usuarioDTO)
         {
-            var usuario = _mapper.Map<Usuario>(usuarioDTO);
-            var usuarioExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Id == usuario.Id);
-
+            var usuarioExiste = await _usuarioRepositorio.ObtenerPrimero(t => t.Id == usuarioDTO.Id);
             if (usuarioExiste != null)
             {
-                _usuarioRepositorio.Actualizar(usuario);
+                if (!string.IsNullOrEmpty(usuarioDTO.NombreCompleto))
+                {
+                    usuarioExiste.NombreCompleto = usuarioDTO.NombreCompleto;
+                }
+                else
+                {
+                    throw new Exception("El Nombre Completo no puede estar vacío.");
+                }
+
+                if (usuarioDTO.Dni > 0)
+                {
+                    usuarioExiste.Dni = usuarioDTO.Dni;
+                }
+                else
+                {
+                    throw new Exception("El DNI debe ser mayor que cero.");
+                }
+
+
+                if (!string.IsNullOrEmpty(usuarioDTO.Tipo))
+                {
+                    if (Enum.TryParse(typeof(TipoUsuario), usuarioDTO.Tipo, out var tipoUsuario))
+                    {
+                        usuarioExiste.Tipo = (TipoUsuario)tipoUsuario;
+                    }
+                    else
+                    {
+                        throw new Exception("El valor del tipo de usuario no es válido.");
+                    }
+                }
+
+
+                _usuarioRepositorio.Actualizar(usuarioExiste);
                 await _unidadTrabajo.Guardar();
                 return true;
             }
@@ -78,7 +115,6 @@ namespace Core.Negocio
             {
                 throw new Exception("El Usuario no existe en la base de datos.");
             }
-            
         }
 
         public async Task<bool> EliminarUsuario(int id)
