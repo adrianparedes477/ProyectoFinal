@@ -29,27 +29,23 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllServicios(int pageNumber = 1, int pageSize = 10)
         {
-            var parametros = new Parametros
-            {
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-
-            var paginaServicios = await _unidadTrabajo.Servicio.ObtenerTodosPaginado(parametros);
-            return ResponseFactory.CreateSuccessResponse(200, paginaServicios);
+            var servicioDto = await _servicioNegocio.GetAllServicios(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, servicioDto);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetServicioById(int id)
         {
-            var servicio = await _servicioNegocio.GetServicioById(id);
-            if (servicio == null)
+            var servicioDto = await _servicioNegocio.GetServicioById(id);
+
+            if (servicioDto == null)
             {
-                return ResponseFactory.CreateErrorResponse(404, "Servicio no encontrado");
+                return NotFound("El servicio no fue encontrado");
             }
 
-            return ResponseFactory.CreateSuccessResponse(200, servicio);
+            return ResponseFactory.CreateSuccessResponse(200, servicioDto);
         }
+
 
         [HttpGet("activos")]
         public async Task<IActionResult> GetServiciosActivos()
@@ -59,7 +55,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearServicio([FromBody] ServicioDTO servicioDTO)
+        public async Task<IActionResult> CrearServicio([FromBody] ServicioReedDTO servicioDTO)
         {
             var creado = await _servicioNegocio.CrearServicio(servicioDTO);
 
@@ -76,12 +72,12 @@ namespace API.Controllers
         {
             if (id != servicioDTO.Id)
             {
-                return ResponseFactory.CreateErrorResponse(400, "Id del servicio no Coincide");
+                return ResponseFactory.CreateErrorResponse(400, "Id del servicio no coincide");
             }
 
             if (!ModelState.IsValid)
             {
-                return ResponseFactory.CreateErrorResponse(400, "Informacion Incorrecta");
+                return ResponseFactory.CreateErrorResponse(400, "Informacion incorrecta");
             }
 
             try
@@ -102,6 +98,7 @@ namespace API.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarServicio(int id)

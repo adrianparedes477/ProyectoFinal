@@ -19,7 +19,6 @@ namespace API.Controllers
     {
         private readonly IProyectoNegocio _proyectoNegocio;
         private readonly IUnidadTrabajo _unidadTrabajo;
-
         public ProyectosController(IProyectoNegocio proyectoNegocio, IUnidadTrabajo unidadTrabajo)
         {
             _proyectoNegocio = proyectoNegocio;
@@ -29,22 +28,23 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProyectos(int pageNumber = 1, int pageSize = 10)
         {
-            var parametros = new Parametros
-            {
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-
-            var paginaProyectos = await _unidadTrabajo.Proyecto.ObtenerTodosPaginado(parametros);
-            return ResponseFactory.CreateSuccessResponse(200, paginaProyectos);
+            var proyectosDto = await _proyectoNegocio.GetAllProyectos(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, proyectosDto);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProyectoById(int id)
         {
             var proyecto = await _proyectoNegocio.GetProyectoById(id);
+
+            if (proyecto == null)
+            {
+                return NotFound("El proyecto no fue encontrado");
+            }
+
             return ResponseFactory.CreateSuccessResponse(200, proyecto);
         }
+
 
         [HttpGet("proyectosPorEstado/{estado}")]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
@@ -54,8 +54,15 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearProyecto([FromBody] ProyectoDto proyectoDto)
+        public async Task<IActionResult> CrearProyecto([FromBody] ProyectoReedDto proyectoDto)
         {
+            var existeProyecto = await _unidadTrabajo.Proyecto.Existe(p => p.Nombre == proyectoDto.Nombre);
+
+            if (existeProyecto)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Ya existe un proyecto con ese nombre.");
+            }
+
             var creado = await _proyectoNegocio.CrearProyecto(proyectoDto);
 
             if (creado)
@@ -71,12 +78,12 @@ namespace API.Controllers
         {
             if (id != proyectoDto.Id)
             {
-                return ResponseFactory.CreateErrorResponse(400, "Id del proyecto no Coincide");
+                return ResponseFactory.CreateErrorResponse(400, "Id del proyecto no coincide");
             }
 
             if (!ModelState.IsValid)
             {
-                return ResponseFactory.CreateErrorResponse(400, "Informacion Incorrecta");
+                return ResponseFactory.CreateErrorResponse(400, "Informacion incorrecta");
             }
 
             try

@@ -26,9 +26,6 @@ namespace Infraestructura.Data.Repositorio
                 .SingleOrDefaultAsync(t => t.Id == id);
         }
 
-
-
-
         public void Actualizar(Trabajo trabajo)
         {
             var trabajoDB = _db.Trabajo.FirstOrDefault(t => t.Id == trabajo.Id);

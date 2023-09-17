@@ -1,5 +1,4 @@
-﻿using API.Helpers;
-using Core.Entidades;
+﻿using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Data.Seeds;
 using System;

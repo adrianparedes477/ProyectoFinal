@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 namespace Core.DTO
 {
 
-    public class TrabajoDTO
+    public class TrabajoReedDTO
     {
-        public int Id { get; set; }
         public string? Fecha { get; set; } // Usamos DateTime? para permitir valores nulos
+        public int CantHoras { get; set; }
         public ProyectoReedDto Proyecto { get; set; }
         public ServicioReedDTO Servicio { get; set; }
-        public int CantHoras { get; set; }
         public decimal ValorHora { get; set; }
         public decimal Costo { get; set; }
 
