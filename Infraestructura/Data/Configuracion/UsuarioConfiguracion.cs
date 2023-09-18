@@ -14,6 +14,8 @@ namespace Infraestructura.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
+            builder.HasQueryFilter(x => !x.Borrado);
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x=>x.NombreCompleto).IsRequired().HasMaxLength(60);

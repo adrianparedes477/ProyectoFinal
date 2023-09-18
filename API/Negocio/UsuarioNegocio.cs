@@ -79,18 +79,10 @@ namespace Core.Negocio
                 {
                     usuarioExiste.NombreCompleto = usuarioDTO.NombreCompleto;
                 }
-                else
-                {
-                    throw new Exception("El Nombre Completo no puede estar vacío.");
-                }
 
                 if (usuarioDTO.Dni > 0)
                 {
                     usuarioExiste.Dni = usuarioDTO.Dni;
-                }
-                else
-                {
-                    throw new Exception("El DNI debe ser mayor que cero.");
                 }
 
 
@@ -123,7 +115,7 @@ namespace Core.Negocio
 
             if (usuario != null)
             {
-                _unidadTrabajo.Usuario.Remover(usuario);
+                await _unidadTrabajo.Usuario.Eliminar(id);
                 await _unidadTrabajo.Guardar();
                 return true;
             }

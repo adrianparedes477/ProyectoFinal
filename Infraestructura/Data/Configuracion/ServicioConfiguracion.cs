@@ -13,6 +13,8 @@ namespace Infraestructura.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<Servicio> builder)
         {
+            builder.HasQueryFilter(x => !x.Borrado);
+
             builder.HasKey(x => x.Id);
 
             builder.Property(x=>x.Descr).IsRequired().HasMaxLength(100);

@@ -115,7 +115,7 @@ namespace Core.Negocio
 
             if (proyecto != null)
             {
-                _unidadTrabajo.Proyecto.Remover(proyecto);
+                await _unidadTrabajo.Proyecto.Eliminar(id);
                 await _unidadTrabajo.Guardar();
                 return true;
             }

@@ -36,8 +36,10 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
 
         Task Agregar(T entidad);
 
-       
-        void Remover(T entidad);
+
+        //void Remover(T entidad);
+
+        Task<bool> Eliminar(int id);
 
         void RemoverRango(IEnumerable<T> entidad);
 
