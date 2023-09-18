@@ -37,7 +37,7 @@ namespace API.Controllers
 
             if (trabajo == null)
             {
-                return NotFound("El proyecto no fue encontrado");
+                return ResponseFactory.CreateSuccessResponse(404,"El proyecto no fue encontrado");
             }
 
             return ResponseFactory.CreateSuccessResponse(200, trabajo);
