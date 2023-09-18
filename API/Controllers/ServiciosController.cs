@@ -40,7 +40,7 @@ namespace API.Controllers
 
             if (servicioDto == null)
             {
-                return NotFound("El servicio no fue encontrado");
+                return ResponseFactory.CreateSuccessResponse(404,"El servicio no fue encontrado");
             }
 
             return ResponseFactory.CreateSuccessResponse(200, servicioDto);
