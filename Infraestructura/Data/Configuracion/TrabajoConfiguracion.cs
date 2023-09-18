@@ -14,7 +14,7 @@ namespace Infraestructura.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<Trabajo> builder)
         {
-            
+            builder.HasQueryFilter(x => !x.Borrado);
 
             builder.HasKey(t => t.Id);
 
