@@ -36,7 +36,7 @@ namespace API.Controllers
             var usuario = await _usuarioNegocio.GetUsuarioById(id);
             if (usuario == null)
             {
-                return NotFound("El Usuario no fue encontrado");
+                return ResponseFactory.CreateSuccessResponse(404,"El Usuario no fue encontrado");
             }
             return ResponseFactory.CreateSuccessResponse(200, usuario);
         }

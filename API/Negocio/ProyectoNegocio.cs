@@ -125,7 +125,7 @@ namespace Core.Negocio
 
         public async Task<IEnumerable<ProyectoReedDto>> GetProyectosPorEstado(int estado)
         {
-            var estadoProyecto = (Proyecto.EstadoProyecto)estado;
+            var estadoProyecto = (EstadoProyecto)estado;
             var proyectosPorEstado = await _unidadTrabajo.Proyecto.GetAll(
                 filtro: p => p.Estado == estadoProyecto,
                 isTracking: false
