@@ -1,4 +1,5 @@
 ﻿using API.Especificaciones;
+using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -6,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Infraestructura.Data.Repositorio
 {
-    public class Repositorio<T> : IRepositorio<T> where T : class
+    public class Repositorio<T> : IRepositorio<T> where T : EntidadBase
     {
         private readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
@@ -21,6 +22,20 @@ namespace Infraestructura.Data.Repositorio
         {
             await dbSet.AddAsync(entidad); // insert into Table
         }
+
+        public async Task<bool> Eliminar(int id)
+        {
+            var entidad = await dbSet.FindAsync(id);
+            if (entidad == null)
+                return false;
+
+            entidad.Borrado = true;
+            entidad.UltimaModificacion = DateTime.Now;
+
+            return true;
+        }
+
+
 
         public async Task<bool> Existe(Expression<Func<T, bool>> filtro)
         {
@@ -107,10 +122,10 @@ namespace Infraestructura.Data.Repositorio
             return PagedList<T>.ToPagedList(query, parametros.PageNumber, parametros.PageSize);
         }
 
-        public void Remover(T entidad)
-        {
-            dbSet.Remove(entidad);
-        }
+        //public void Remover(T entidad)
+        //{
+        //    dbSet.Remove(entidad);
+        //}
 
         public void RemoverRango(IEnumerable<T> entidad)
         {

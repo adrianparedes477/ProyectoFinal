@@ -91,7 +91,7 @@ namespace API.Negocio
 
             if (servicio != null)
             {
-                _unidadTrabajo.Servicio.Remover(servicio);
+                await _unidadTrabajo.Servicio.Eliminar(id);
                 await _unidadTrabajo.Guardar();
                 return true;
             }

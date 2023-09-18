@@ -9,8 +9,6 @@ namespace Infraestructura.Data.Seeds
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-            
-
             builder.HasData(
                new Usuario
                {
@@ -18,7 +16,12 @@ namespace Infraestructura.Data.Seeds
                    NombreCompleto = "Admin",
                    Dni = 12345678,
                    Tipo = Usuario.TipoUsuario.Administrador,
-                   Contrasenia = PasswordEncryptHelper.EncryptPassword("ContraseñaAdmin123")
+                   Contrasenia = PasswordEncryptHelper.EncryptPassword("ContraseñaAdmin123"),
+                   Borrado = false,
+                   Creado = new DateTime(2023, 08, 30),
+                   UltimaModificacion = DateTime.Now
+
+
                },
                 new Usuario
                 {
@@ -26,7 +29,9 @@ namespace Infraestructura.Data.Seeds
                     NombreCompleto = "Consultor",
                     Dni = 87654321,
                     Tipo = Usuario.TipoUsuario.Consultor,
-                    Contrasenia = PasswordEncryptHelper.EncryptPassword("ContraseñaConsultor123")
+                    Contrasenia = PasswordEncryptHelper.EncryptPassword("ContraseñaConsultor123"),
+                    Borrado = false,
+                    Creado = new DateTime(2023, 05, 15)
                 }
             );
         }

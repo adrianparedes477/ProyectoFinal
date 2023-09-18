@@ -125,7 +125,7 @@ namespace API.Negocio
 
             if (trabajo != null)
             {
-                _unidadTrabajo.Trabajo.Remover(trabajo);
+                await _unidadTrabajo.Trabajo.Eliminar(id);
                 await _unidadTrabajo.Guardar();
                 return true;
             }
