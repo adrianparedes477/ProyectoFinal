@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entidades
 {
-    public class Trabajo
+    public class Trabajo :EntidadBase
     {
         [Column("codTrabajo")]
         [Key]

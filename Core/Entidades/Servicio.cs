@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entidades
 {
-    public class Servicio
+    public class Servicio :EntidadBase
     {
         [Column("codServicio")]
         public int Id { get; set; }

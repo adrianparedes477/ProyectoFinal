@@ -22,7 +22,10 @@ namespace Infraestructura.Data.Seeds
                     CodServicio = 1,
                     CantHoras = 20,
                     ValorHora = 10,
-                    Costo = 20
+                    Costo = 20,
+                    Borrado = false,
+                    Creado = new DateTime(2023, 08, 30),
+                    UltimaModificacion = DateTime.Now
 
 
                 }
