@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Core.DTO
 {
-    public class UsuarioLoginDTO
+    public class AuthenticateDto
     {
         public string NombreCompleto { get; set; }
         public int Dni { get; set; }
-        public string Token { get; set; }
-
+        public string Contrasenia { get; set; }
     }
 }

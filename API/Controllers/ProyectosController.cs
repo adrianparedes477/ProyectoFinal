@@ -7,12 +7,14 @@ using Core.Negocio;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Proyectos")]
     public class ProyectosController : ControllerBase
@@ -25,6 +27,11 @@ namespace API.Controllers
             _unidadTrabajo = unidadTrabajo;
         }
 
+
+        /// <summary>
+        /// Obtiene todos los proyectos paginados.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllProyectos(int pageNumber = 1, int pageSize = 10)
         {
@@ -32,6 +39,10 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, proyectosDto);
         }
 
+        /// <summary>
+        /// Obtiene un proyecto por su ID.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProyectoById(int id)
         {
@@ -45,7 +56,10 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, proyecto);
         }
 
-
+        /// <summary>
+        /// Obtiene proyectos por su estado.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet("proyectosPorEstado/{estado}")]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
         {
@@ -53,6 +67,9 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, proyecto);
         }
 
+        /// <summary>
+        /// Crea un nuevo proyecto.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CrearProyecto([FromBody] ProyectoReedDto proyectoDto)
         {
@@ -73,6 +90,9 @@ namespace API.Controllers
             return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Proyecto");
         }
 
+        /// <summary>
+        /// Actualiza un proyecto existente por su ID.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarProyecto(int id, [FromBody] ProyectoDto proyectoDto)
         {
@@ -105,6 +125,9 @@ namespace API.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina un proyecto por su ID.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarProyecto(int id)
         {

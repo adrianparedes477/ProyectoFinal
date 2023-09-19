@@ -1,6 +1,8 @@
-﻿using Core.Entidades;
+﻿using Core.DTO;
+using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Data.Seeds;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +39,16 @@ namespace Infraestructura.Data.Repositorio
             {
                 throw new Exception("El Usuario no existe en la base de datos.");
             }
+        }
+
+        public async Task<Usuario?> AuthenticateCredentials(AuthenticateDto dto)
+        {
+            return await _db.Usuario
+                .SingleOrDefaultAsync(x =>
+                    x.NombreCompleto == dto.NombreCompleto &&
+                    x.Dni == dto.Dni &&
+                    x.Contrasenia == PasswordEncryptHelper.EncryptPassword(dto.Contrasenia)
+                );
         }
 
     }

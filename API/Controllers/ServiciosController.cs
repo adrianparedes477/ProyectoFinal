@@ -7,12 +7,14 @@ using Core.Negocio;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Servicios")]
     public class ServiciosController : ControllerBase
@@ -26,6 +28,10 @@ namespace API.Controllers
             _unidadTrabajo = unidadTrabajo;
         }
 
+        /// <summary>
+        /// Obtiene todos los servicios paginados.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllServicios(int pageNumber = 1, int pageSize = 10)
         {
@@ -33,6 +39,10 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, servicioDto);
         }
 
+        /// <summary>
+        /// Obtiene un servicio por su ID.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetServicioById(int id)
         {
@@ -46,7 +56,10 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, servicioDto);
         }
 
-
+        /// <summary>
+        /// Obtiene servicios activos.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet("activos")]
         public async Task<IActionResult> GetServiciosActivos()
         {
@@ -54,6 +67,9 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, serviciosActivos);
         }
 
+        /// <summary>
+        /// Crea un nuevo servicio.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CrearServicio([FromBody] ServicioReedDTO servicioDTO)
         {
@@ -67,6 +83,9 @@ namespace API.Controllers
             return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Servicio");
         }
 
+        /// <summary>
+        /// Actualiza un servicio existente por su ID.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarServicio(int id, [FromBody] ServicioDTO servicioDTO)
         {
@@ -100,6 +119,9 @@ namespace API.Controllers
         }
 
 
+        /// <summary>
+        /// Elimina un servicio por su ID.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarServicio(int id)
         {
