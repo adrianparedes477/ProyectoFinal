@@ -5,11 +5,13 @@ using Core.Entidades;
 using Core.Negocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Trabajos")]
     public class TrabajosController : ControllerBase
@@ -23,6 +25,10 @@ namespace API.Controllers
             _unidadTrabajo = unidadTrabajo;
         }
 
+        /// <summary>
+        /// Obtiene todos los trabajos paginados.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllTrabajos(int pageNumber = 1, int pageSize = 10)
         {
@@ -30,6 +36,10 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, trabajosDto);
         }
 
+        /// <summary>
+        /// Obtiene un trabajo por su ID.
+        /// </summary>
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTrabajoById(int id)
         {
@@ -43,6 +53,9 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, trabajo);
         }
 
+        /// <summary>
+        /// Crea un nuevo trabajo.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CrearTrabajo([FromBody] TrabajoCrearDTO trabajoDto, [FromQuery] int proyectoId, [FromQuery] int servicioId)
         {
@@ -56,6 +69,9 @@ namespace API.Controllers
             return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Trabajo");
         }
 
+        /// <summary>
+        /// Actualiza un trabajo existente por su ID.
+        /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,6 +106,9 @@ namespace API.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina un trabajo por su ID.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarTrabajo(int id)
         {

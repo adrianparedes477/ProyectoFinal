@@ -4,12 +4,14 @@ using Core.DTO;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/Usuarios")]
     public class UsuariosController : ControllerBase
@@ -23,14 +25,29 @@ namespace API.Controllers
             _unidadTrabajo = unidadTrabajo;
         }
 
+
+        /// <summary>
+        /// Obtiene todos los usuarios paginados.
+        /// </summary>
+        /// <param name="pageNumber">Número de página.</param>
+        /// <param name="pageSize">Tamaño de la página.</param>
+        /// <returns>Una lista paginada de usuarios.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
         {
             var usuariosDto = await _usuarioNegocio.GetAllUsuarios(pageNumber, pageSize);
             return ResponseFactory.CreateSuccessResponse(200, usuariosDto);
         }
 
+
+        /// <summary>
+        /// Obtiene un usuario por su ID.
+        /// </summary>
+        /// <param name="id">ID del usuario.</param>
+        /// <returns>El usuario con el ID especificado.</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUsuarioById(int id)
         {
             var usuario = await _usuarioNegocio.GetUsuarioById(id);
@@ -41,6 +58,12 @@ namespace API.Controllers
             return ResponseFactory.CreateSuccessResponse(200, usuario);
         }
 
+
+        /// <summary>
+        /// Crea un nuevo usuario.
+        /// </summary>
+        /// <param name="usuarioDTO">Datos del usuario a crear.</param>
+        /// <returns>Respuesta de estado de la creación.</returns>
         [HttpPost]
         public async Task<IActionResult> CrearUsuario([FromBody] UsuarioReedDTO usuarioDTO)
         {
@@ -59,6 +82,13 @@ namespace API.Controllers
             return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Usuario");
         }
 
+
+        /// <summary>
+        /// Actualiza un usuario existente.
+        /// </summary>
+        /// <param name="id">ID del usuario a actualizar.</param>
+        /// <param name="usuarioDTO">Nuevos datos del usuario.</param>
+        /// <returns>Respuesta de estado de la actualización.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] UsuarioDTO usuarioDTO)
         {
@@ -91,6 +121,12 @@ namespace API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Elimina un usuario por su ID.
+        /// </summary>
+        /// <param name="id">ID del usuario a eliminar.</param>
+        /// <returns>Respuesta de estado de la eliminación.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarUsuario(int id)
         {
