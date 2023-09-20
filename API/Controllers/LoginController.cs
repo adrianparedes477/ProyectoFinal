@@ -1,4 +1,5 @@
 ﻿using API.Helpers;
+using API.Negocio.INegocio;
 using Core.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Authorization;
@@ -11,13 +12,11 @@ namespace API.Controllers
     public class LoginController : ControllerBase
     {
 
-        private TokenJwtHelper _tokenJwtHelper;
-        private readonly IUnidadTrabajo _unidadTrabajo;
+        private readonly ILoginNegocio _loginNegocio;
 
-        public LoginController(IUnidadTrabajo unidadTrabajo, IConfiguration configuration)
+        public LoginController(ILoginNegocio loginNegocio)
         {
-            _unidadTrabajo = unidadTrabajo;
-            _tokenJwtHelper = new TokenJwtHelper(configuration);
+            _loginNegocio = loginNegocio;
         }
 
         /// <summary>
@@ -25,23 +24,16 @@ namespace API.Controllers
         /// </summary>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(AuthenticateDto dto)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(String))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Login([FromBody] AuthenticateDto dto)
         {
-            var userCredentials = await _unidadTrabajo.Usuario.AuthenticateCredentials(dto);
-            if (userCredentials is null) return Unauthorized("Las credenciales son incorrectas");
+            var usuario = await _loginNegocio.AuthenticateCredentials(dto);
 
-            var token = _tokenJwtHelper.GenerateToken(userCredentials);
-
-            var usuario = new UsuarioLoginDTO()
-            {
-                NombreCompleto = userCredentials.NombreCompleto,
-                Dni = userCredentials.Dni,
-                Token = token
-            };
-
+            if (usuario is null)
+                return Unauthorized("Las credenciales son incorrectas");
 
             return Ok(usuario);
-
         }
     }
 }
