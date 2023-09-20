@@ -1,10 +1,4 @@
-﻿using Core.Entidades;
-using Infraestructura.Data.Repositorio.IRepositorio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Infraestructura.Data.Repositorio.IRepositorio;
 
 namespace Infraestructura.Data.Repositorio
 {

@@ -3,7 +3,6 @@ using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
-using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 
 namespace API.Negocio
