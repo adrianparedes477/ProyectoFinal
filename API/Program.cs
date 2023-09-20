@@ -78,6 +78,7 @@ builder.Services.AddScoped<IUsuarioNegocio, UsuarioNegocio>();
 builder.Services.AddScoped<IProyectoNegocio, ProyectoNegocio>();
 builder.Services.AddScoped<IServicioNegocio, ServicioNegocio>();
 builder.Services.AddScoped<ITrabajoNegocio, TrabajoNegocio>();
+builder.Services.AddScoped<ILoginNegocio, LoginNegocio>();
 
 
 var app = builder.Build();

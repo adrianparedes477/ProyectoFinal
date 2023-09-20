@@ -1,14 +1,8 @@
-﻿using API.Especificaciones;
-using API.Negocio.INegocio;
-using AutoMapper;
+﻿using API.Negocio.INegocio;
 using Core.DTO;
-using Core.Entidades;
-using Core.Negocio;
-using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -31,36 +25,48 @@ namespace API.Controllers
         /// <summary>
         /// Obtiene todos los servicios paginados.
         /// </summary>
+        /// <param name="pageNumber">Número de página.</param>
+        /// <param name="pageSize">Tamaño de la página.</param>
+        /// <returns>Lista de servicios paginados.</returns>
         [AllowAnonymous]
         [HttpGet]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         public async Task<IActionResult> GetAllServicios(int pageNumber = 1, int pageSize = 10)
         {
             var servicioDto = await _servicioNegocio.GetAllServicios(pageNumber, pageSize);
             return ResponseFactory.CreateSuccessResponse(200, servicioDto);
         }
 
+
         /// <summary>
         /// Obtiene un servicio por su ID.
         /// </summary>
+        /// <param name="id">ID del servicio.</param>
+        /// <returns>El servicio correspondiente al ID proporcionado.</returns>
         [AllowAnonymous]
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetServicioById(int id)
         {
             var servicioDto = await _servicioNegocio.GetServicioById(id);
 
             if (servicioDto == null)
             {
-                return ResponseFactory.CreateSuccessResponse(404,"El servicio no fue encontrado");
+                return ResponseFactory.CreateErrorResponse(404, "El servicio no fue encontrado");
             }
 
             return ResponseFactory.CreateSuccessResponse(200, servicioDto);
         }
 
+
         /// <summary>
         /// Obtiene servicios activos.
         /// </summary>
+        /// <returns>Lista de servicios activos.</returns>
         [AllowAnonymous]
         [HttpGet("activos")]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         public async Task<IActionResult> GetServiciosActivos()
         {
             var serviciosActivos = await _servicioNegocio.GetServiciosActivos();

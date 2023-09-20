@@ -1,13 +1,9 @@
-﻿using API.Especificaciones;
-using API.Negocio.INegocio;
+﻿using API.Negocio.INegocio;
 using Core.DTO;
-using Core.Entidades;
-using Core.Negocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace API.Controllers
 {

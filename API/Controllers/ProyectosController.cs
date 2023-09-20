@@ -1,16 +1,9 @@
-﻿using API.Especificaciones;
-using API.Negocio.INegocio;
-using AutoMapper;
+﻿using API.Negocio.INegocio;
 using Core.DTO;
-using Core.Entidades;
-using Core.Negocio;
-using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace API.Controllers
 {
@@ -31,83 +24,162 @@ namespace API.Controllers
         /// <summary>
         /// Obtiene todos los proyectos paginados.
         /// </summary>
+        /// <param name="pageNumber">Número de la página actual (por defecto es 1).</param>
+        /// <param name="pageSize">Tamaño de la página (por defecto es 10).</param>
+        /// <returns>Una lista de proyectos paginados.</returns>
+        /// <response code="200">Devuelve una lista de proyectos paginados.</response>
+        /// <response code="400">Si hay un error en la solicitud o en el procesamiento.</response>
+        /// <response code="404">si no se encuentra el proyecto.</response>
         [AllowAnonymous]
         [HttpGet]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetAllProyectos(int pageNumber = 1, int pageSize = 10)
         {
-            var proyectosDto = await _proyectoNegocio.GetAllProyectos(pageNumber, pageSize);
-            return ResponseFactory.CreateSuccessResponse(200, proyectosDto);
+            try
+            {
+                var proyectosDto = await _proyectoNegocio.GetAllProyectos(pageNumber, pageSize);
+
+                if (proyectosDto == null || !proyectosDto.Any())
+                {
+                    return ResponseFactory.CreateSuccessResponse(404, "No se encontraron proyectos.");
+                }
+
+                return ResponseFactory.CreateSuccessResponse(200, proyectosDto);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(400, ex.Message);
+            }
         }
+
 
         /// <summary>
         /// Obtiene un proyecto por su ID.
         /// </summary>
+        /// <param name="id">ID único del proyecto.</param>
+        /// <returns>
+        ///     <para>Devuelve el proyecto con el ID especificado.</para>
+        ///     <para>Devuelve un mensaje de error si el proyecto no se encuentra.</para>
+        /// </returns>
+        /// <response code="200">Devuelve el proyecto con el ID especificado.</response>
+        /// <response code="404">Si el proyecto no fue encontrado.</response>
         [AllowAnonymous]
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProyectoDto), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetProyectoById(int id)
         {
-            var proyecto = await _proyectoNegocio.GetProyectoById(id);
-
-            if (proyecto == null)
+            try
             {
-                return ResponseFactory.CreateSuccessResponse(404,"El proyecto no fue encontrado");
-            }
+                var proyecto = await _proyectoNegocio.GetProyectoById(id);
 
-            return ResponseFactory.CreateSuccessResponse(200, proyecto);
+                if (proyecto == null)
+                {
+                    return ResponseFactory.CreateErrorResponse(404, "El proyecto no fue encontrado");
+                }
+
+                return ResponseFactory.CreateSuccessResponse(200, proyecto);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(400, ex.Message);
+            }
         }
+
 
         /// <summary>
         /// Obtiene proyectos por su estado.
         /// </summary>
+        /// <param name="estado">Estado de los proyectos a buscar.</param>
+        /// <returns>
+        ///     <para>Devuelve una lista de proyectos que tienen el estado especificado.</para>
+        ///     <para>Devuelve una lista vacía si no se encuentran proyectos con ese estado.</para>
+        /// </returns>
+        /// <response code="200">Devuelve la lista de proyectos con el estado especificado.</response>
+        /// <response code="400">Si hay un error en la solicitud o en el procesamiento.</response>
         [AllowAnonymous]
         [HttpGet("proyectosPorEstado/{estado}")]
+        [ProducesResponseType(typeof(List<ProyectoDto>), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
         {
-            var proyecto = await _proyectoNegocio.GetProyectosPorEstado(estado);
-            return ResponseFactory.CreateSuccessResponse(200, proyecto);
+            try
+            {
+                var proyectos = await _proyectoNegocio.GetProyectosPorEstado(estado);
+                return ResponseFactory.CreateSuccessResponse(200, proyectos);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(400, ex.Message);
+            }
         }
+
 
         /// <summary>
         /// Crea un nuevo proyecto.
         /// </summary>
+        /// <param name="proyectoDto">Datos del proyecto a crear.</param>
+        /// <returns>El resultado de la operación.</returns>
+        /// <response code="200">Se ha creado el proyecto exitosamente.</response>
+        /// <response code="400">Si ya existe un proyecto con el mismo nombre o no se pudo crear el proyecto.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         public async Task<IActionResult> CrearProyecto([FromBody] ProyectoReedDto proyectoDto)
         {
-            var existeProyecto = await _unidadTrabajo.Proyecto.Existe(p => p.Nombre == proyectoDto.Nombre);
-
-            if (existeProyecto)
+            try
             {
-                return ResponseFactory.CreateErrorResponse(400, "Ya existe un proyecto con ese nombre.");
+                var existeProyecto = await _unidadTrabajo.Proyecto.Existe(p => p.Nombre == proyectoDto.Nombre);
+
+                if (existeProyecto)
+                {
+                    return ResponseFactory.CreateErrorResponse(400, "Ya existe un proyecto con ese nombre.");
+                }
+
+                var creado = await _proyectoNegocio.CrearProyecto(proyectoDto);
+
+                if (creado)
+                {
+                    return ResponseFactory.CreateSuccessResponse(200, "Proyecto creado exitosamente");
+                }
+
+                return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Proyecto");
             }
-
-            var creado = await _proyectoNegocio.CrearProyecto(proyectoDto);
-
-            if (creado)
+            catch (Exception ex)
             {
-                return ResponseFactory.CreateSuccessResponse(200, "Proyecto creado exitosamente");
+                return ResponseFactory.CreateErrorResponse(500, ex.Message);
             }
-
-            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Proyecto");
         }
+
 
         /// <summary>
         /// Actualiza un proyecto existente por su ID.
         /// </summary>
+        /// <param name="id">ID del proyecto a actualizar.</param>
+        /// <param name="proyectoDto">Datos actualizados del proyecto.</param>
+        /// <returns>El resultado de la operación.</returns>
+        /// <response code="200">El proyecto se actualizó exitosamente.</response>
+        /// <response code="400">Si el ID del proyecto no coincide, la información es incorrecta o el proyecto no pudo ser actualizado.</response>
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 500)]
         public async Task<IActionResult> ActualizarProyecto(int id, [FromBody] ProyectoDto proyectoDto)
         {
-            if (id != proyectoDto.Id)
-            {
-                return ResponseFactory.CreateErrorResponse(400, "Id del proyecto no coincide");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return ResponseFactory.CreateErrorResponse(400, "Informacion incorrecta");
-            }
-
             try
             {
+                if (id != proyectoDto.Id)
+                {
+                    return ResponseFactory.CreateErrorResponse(400, "Id del proyecto no coincide");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return ResponseFactory.CreateErrorResponse(400, "Información incorrecta");
+                }
+
                 var actualizado = await _proyectoNegocio.ActualizarProyecto(proyectoDto);
 
                 if (actualizado)
@@ -125,10 +197,17 @@ namespace API.Controllers
             }
         }
 
+
         /// <summary>
         /// Elimina un proyecto por su ID.
         /// </summary>
+        /// <param name="id">ID del proyecto a eliminar.</param>
+        /// <returns>El resultado de la operación.</returns>
+        /// <response code="200">El proyecto se eliminó exitosamente.</response>
+        /// <response code="404">Si el proyecto no fue encontrado.</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         public async Task<IActionResult> EliminarProyecto(int id)
         {
             var eliminado = await _proyectoNegocio.EliminarProyecto(id);
@@ -140,5 +219,6 @@ namespace API.Controllers
 
             return ResponseFactory.CreateErrorResponse(404, "Proyecto no encontrado");
         }
+
     }
 }
