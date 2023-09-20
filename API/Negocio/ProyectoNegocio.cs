@@ -3,15 +3,7 @@ using API.Negocio.INegocio;
 using AutoMapper;
 using Core.DTO;
 using Core.Entidades;
-using Core.Negocio.INegocio;
-using Infraestructura.Data.Repositorio;
 using Infraestructura.Data.Repositorio.IRepositorio;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Core.Entidades.Proyecto;
 
 namespace Core.Negocio
