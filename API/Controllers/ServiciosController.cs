@@ -1,5 +1,5 @@
 ﻿using API.Negocio.INegocio;
-using Core.DTO;
+using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -28,8 +28,8 @@ namespace API.Controllers
         /// <param name="pageNumber">Número de página.</param>
         /// <param name="pageSize">Tamaño de la página.</param>
         /// <returns>Lista de servicios paginados.</returns>
-        [AllowAnonymous]
         [HttpGet]
+        [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         public async Task<IActionResult> GetAllServicios(int pageNumber = 1, int pageSize = 10)
         {
@@ -43,8 +43,8 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">ID del servicio.</param>
         /// <returns>El servicio correspondiente al ID proporcionado.</returns>
-        [AllowAnonymous]
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetServicioById(int id)
@@ -64,8 +64,8 @@ namespace API.Controllers
         /// Obtiene servicios activos.
         /// </summary>
         /// <returns>Lista de servicios activos.</returns>
-        [AllowAnonymous]
         [HttpGet("activos")]
+        [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         public async Task<IActionResult> GetServiciosActivos()
         {
@@ -77,6 +77,7 @@ namespace API.Controllers
         /// Crea un nuevo servicio.
         /// </summary>
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> CrearServicio([FromBody] ServicioReedDTO servicioDTO)
         {
             var creado = await _servicioNegocio.CrearServicio(servicioDTO);
@@ -93,6 +94,7 @@ namespace API.Controllers
         /// Actualiza un servicio existente por su ID.
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> ActualizarServicio(int id, [FromBody] ServicioDTO servicioDTO)
         {
             if (id != servicioDTO.Id)
@@ -129,6 +131,7 @@ namespace API.Controllers
         /// Elimina un servicio por su ID.
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> EliminarServicio(int id)
         {
             var eliminado = await _servicioNegocio.EliminarServicio(id);

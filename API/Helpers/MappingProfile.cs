@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Core.Entidades;
-using Core.DTO;
 using static Core.Entidades.Usuario;
 using System.Globalization;
+using Core.Modelos.DTO;
 
 public class MappingProfile : Profile
 {

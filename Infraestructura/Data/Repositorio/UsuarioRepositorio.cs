@@ -1,5 +1,5 @@
-﻿using Core.DTO;
-using Core.Entidades;
+﻿using Core.Entidades;
+using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Data.Seeds;
 using Microsoft.EntityFrameworkCore;
