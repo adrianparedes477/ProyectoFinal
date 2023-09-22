@@ -11,8 +11,8 @@ public class Email
 
     void EnviarCorreoBienvenida(string correo_receptor, UsuarioReedDTO usuarioDTO)
     {
-        string correo_emisor = "postmaster@sandbox047c370802724d4289cde9f0d82deabd.mailgun.org";
-        string clave_emisor = "607ae25146376bdd250d29fdbcdbcfc7-6d1c649a-33d6f3bf";
+        string correo_emisor = "";
+        string clave_emisor = "";
 
         MailAddress receptor = new(correo_receptor);
         MailAddress emisor = new(correo_emisor);
@@ -22,30 +22,30 @@ public class Email
 
         email.IsBodyHtml = true;
         email.Body = $@"
-    <html>
-        <head>
-            <!-- Agregamos los estilos de Bootstrap en línea -->
-            <style>
-                .jumbotron {{
-                    background-color: #e9ecef;
-                    padding: 2rem;
-                    border-radius: .3rem;
-                }}
-            </style>
-        </head>
-        <body>
-            <div class=""container"">
-                <div class=""jumbotron mt-4"">
-                    <h1 class=""display-4"">Bienvenido a Nuestra Plataforma</h1>
-                    <p class=""lead"">Estamos emocionados de tenerte con nosotros.</p>
-                    <p>Nombre Completo: {usuarioDTO.NombreCompleto}</p>
-                    <p>DNI: {usuarioDTO.Dni}</p>
-                    <p>Correo: {usuarioDTO.Correo}</p>
-                </div>
-            </div>
-        </body>
-    </html>
-";
+            <html>
+                <head>
+                    <!-- Agregamos los estilos de Bootstrap en línea -->
+                    <style>
+                        .jumbotron {{
+                            background-color: #e9ecef;
+                            padding: 2rem;
+                            border-radius: .3rem;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class=""container"">
+                        <div class=""jumbotron mt-4"">
+                            <h1 class=""display-4"">Bienvenido a Nuestra Plataforma</h1>
+                            <p class=""lead"">Estamos emocionados de tenerte con nosotros.</p>
+                            <p>Nombre Completo: {usuarioDTO.NombreCompleto}</p>
+                            <p>DNI: {usuarioDTO.Dni}</p>
+                            <p>Correo: {usuarioDTO.Correo}</p>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        ";
 
 
 
