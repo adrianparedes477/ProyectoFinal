@@ -1,7 +1,7 @@
 ﻿using API.Especificaciones;
 using AutoMapper;
-using Core.DTO;
 using Core.Entidades;
+using Core.Modelos.DTO;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Data.Seeds;
@@ -54,10 +54,17 @@ namespace Core.Negocio
             {
                 throw new Exception("Ya existe un usuario con ese nombre.");
             }
+
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
             usuario.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);
+
             await _unidadTrabajo.Usuario.Agregar(usuario);
             await _unidadTrabajo.Guardar();
+
+            // Aquí enviamos el correo de bienvenida
+            var email = new Email();
+            email.EnviarBienvenida(usuarioDTO.Correo, usuarioDTO);
+
             return true;
         }
 

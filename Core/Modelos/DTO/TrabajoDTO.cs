@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO
+namespace Core.Modelos.DTO
 {
 
     public class TrabajoDTO
     {
         public int Id { get; set; }
-        public string? Fecha { get; set; } // Usamos DateTime? para permitir valores nulos
+        public string Fecha { get; set; } // Usamos DateTime? para permitir valores nulos
         public ProyectoReedDto Proyecto { get; set; }
         public ServicioReedDTO Servicio { get; set; }
         public int CantHoras { get; set; }

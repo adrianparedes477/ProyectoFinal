@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using API.Negocio.INegocio;
 using API.Negocio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -34,6 +33,8 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer"
     });
 
+
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
                     {
@@ -53,6 +54,20 @@ builder.Services.AddSwaggerGen(c =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connectionString));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Administrador", policy =>
+        policy.RequireClaim(ClaimTypes.Role, "Administrador"));
+
+    options.AddPolicy("AdminOrConsultor", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c =>
+                (c.Type == ClaimTypes.Role && c.Value == "Administrador") ||
+                (c.Type == ClaimTypes.Role && c.Value == "Consultor")
+            )
+        ));
+});
 
 
 
