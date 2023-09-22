@@ -1,5 +1,5 @@
 ﻿using API.Negocio.INegocio;
-using Core.DTO;
+using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -24,8 +24,8 @@ namespace API.Controllers
         /// <summary>
         /// Obtiene todos los trabajos paginados.
         /// </summary>
-        [AllowAnonymous]
         [HttpGet]
+        [Authorize(Policy = "AdminOrConsultor")]
         public async Task<IActionResult> GetAllTrabajos(int pageNumber = 1, int pageSize = 10)
         {
             var trabajosDto = await _trabajoNegocio.GetAllTrabajos(pageNumber, pageSize);
@@ -35,8 +35,8 @@ namespace API.Controllers
         /// <summary>
         /// Obtiene un trabajo por su ID.
         /// </summary>
-        [AllowAnonymous]
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrConsultor")]
         public async Task<IActionResult> GetTrabajoById(int id)
         {
             var trabajo = await _trabajoNegocio.GetTrabajoById(id);
@@ -53,6 +53,7 @@ namespace API.Controllers
         /// Crea un nuevo trabajo.
         /// </summary>
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> CrearTrabajo([FromBody] TrabajoCrearDTO trabajoDto, [FromQuery] int proyectoId, [FromQuery] int servicioId)
         {
             var creado = await _trabajoNegocio.CrearTrabajo(trabajoDto, proyectoId, servicioId);
@@ -69,6 +70,7 @@ namespace API.Controllers
         /// Actualiza un trabajo existente por su ID.
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ActualizarTrabajo(int id, [FromBody] TrabajoActualizarDTO trabajoDTO)
@@ -106,6 +108,7 @@ namespace API.Controllers
         /// Elimina un trabajo por su ID.
         /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> EliminarTrabajo(int id)
         {
             var eliminado = await _trabajoNegocio.EliminarTrabajo(id);

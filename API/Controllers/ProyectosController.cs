@@ -1,5 +1,5 @@
 ﻿using API.Negocio.INegocio;
-using Core.DTO;
+using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
 using Microsoft.AspNetCore.Authorization;
@@ -30,8 +30,8 @@ namespace API.Controllers
         /// <response code="200">Devuelve una lista de proyectos paginados.</response>
         /// <response code="400">Si hay un error en la solicitud o en el procesamiento.</response>
         /// <response code="404">si no se encuentra el proyecto.</response>
-        [AllowAnonymous]
         [HttpGet]
+        [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
@@ -65,8 +65,8 @@ namespace API.Controllers
         /// </returns>
         /// <response code="200">Devuelve el proyecto con el ID especificado.</response>
         /// <response code="404">Si el proyecto no fue encontrado.</response>
-        [AllowAnonymous]
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(ProyectoDto), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetProyectoById(int id)
@@ -99,8 +99,8 @@ namespace API.Controllers
         /// </returns>
         /// <response code="200">Devuelve la lista de proyectos con el estado especificado.</response>
         /// <response code="400">Si hay un error en la solicitud o en el procesamiento.</response>
-        [AllowAnonymous]
         [HttpGet("proyectosPorEstado/{estado}")]
+        [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(List<ProyectoDto>), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
@@ -124,9 +124,12 @@ namespace API.Controllers
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">Se ha creado el proyecto exitosamente.</response>
         /// <response code="400">Si ya existe un proyecto con el mismo nombre o no se pudo crear el proyecto.</response>
+        /// <response code="403">El usuario no está autorizado.</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 403)]
         public async Task<IActionResult> CrearProyecto([FromBody] ProyectoReedDto proyectoDto)
         {
             try
@@ -163,6 +166,7 @@ namespace API.Controllers
         /// <response code="200">El proyecto se actualizó exitosamente.</response>
         /// <response code="400">Si el ID del proyecto no coincide, la información es incorrecta o el proyecto no pudo ser actualizado.</response>
         [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiSuccessResponse), 500)]
@@ -206,8 +210,10 @@ namespace API.Controllers
         /// <response code="200">El proyecto se eliminó exitosamente.</response>
         /// <response code="404">Si el proyecto no fue encontrado.</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+        [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 403)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> EliminarProyecto(int id)
         {
             var eliminado = await _proyectoNegocio.EliminarProyecto(id);

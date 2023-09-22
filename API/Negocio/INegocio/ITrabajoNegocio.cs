@@ -1,4 +1,4 @@
-﻿using Core.DTO;
+﻿using Core.Modelos.DTO;
 
 namespace API.Negocio.INegocio
 {

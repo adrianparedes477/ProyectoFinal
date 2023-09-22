@@ -1,4 +1,4 @@
-﻿using Core.DTO;
+﻿using Core.Modelos.DTO;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
@@ -29,7 +29,7 @@ namespace API.Controllers
         /// <param name="pageSize">Tamaño de la página.</param>
         /// <returns>Una lista paginada de usuarios.</returns>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOrConsultor")]
         public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
         {
             var usuariosDto = await _usuarioNegocio.GetAllUsuarios(pageNumber, pageSize);
@@ -43,7 +43,7 @@ namespace API.Controllers
         /// <param name="id">ID del usuario.</param>
         /// <returns>El usuario con el ID especificado.</returns>
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOrConsultor")]
         public async Task<IActionResult> GetUsuarioById(int id)
         {
             var usuario = await _usuarioNegocio.GetUsuarioById(id);
@@ -61,6 +61,7 @@ namespace API.Controllers
         /// <param name="usuarioDTO">Datos del usuario a crear.</param>
         /// <returns>Respuesta de estado de la creación.</returns>
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> CrearUsuario([FromBody] UsuarioReedDTO usuarioDTO)
         {
             var existeUsuario = await _unidadTrabajo.Usuario.Existe(p => p.NombreCompleto == usuarioDTO.NombreCompleto);
@@ -86,6 +87,7 @@ namespace API.Controllers
         /// <param name="usuarioDTO">Nuevos datos del usuario.</param>
         /// <returns>Respuesta de estado de la actualización.</returns>
         [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] UsuarioDTO usuarioDTO)
         {
             if (id != usuarioDTO.Id)
@@ -124,6 +126,7 @@ namespace API.Controllers
         /// <param name="id">ID del usuario a eliminar.</param>
         /// <returns>Respuesta de estado de la eliminación.</returns>
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> EliminarUsuario(int id)
         {
             var eliminado = await _usuarioNegocio.EliminarUsuario(id);

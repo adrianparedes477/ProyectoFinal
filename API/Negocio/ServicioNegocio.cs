@@ -1,8 +1,8 @@
 ﻿using API.Especificaciones;
 using API.Negocio.INegocio;
 using AutoMapper;
-using Core.DTO;
 using Core.Entidades;
+using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 
 namespace API.Negocio
