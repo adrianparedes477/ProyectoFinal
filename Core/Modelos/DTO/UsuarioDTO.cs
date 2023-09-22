@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO
+namespace Core.Modelos.DTO
 {
-    public class UsuarioReedDTO
+    public class UsuarioDTO
     {
+        public int Id { get; set; }
         public string NombreCompleto { get; set; }
         public int Dni { get; set; }
-        [Required]
         public string Contrasenia { get; set; }
         public string Tipo { get; set; }
     }

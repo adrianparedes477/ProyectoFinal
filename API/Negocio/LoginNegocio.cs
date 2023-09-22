@@ -1,6 +1,6 @@
 ﻿using API.Helpers;
 using API.Negocio.INegocio;
-using Core.DTO;
+using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Microsoft.Extensions.Configuration;
 

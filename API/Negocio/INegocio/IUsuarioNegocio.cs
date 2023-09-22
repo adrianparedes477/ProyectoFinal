@@ -1,4 +1,4 @@
-﻿using Core.DTO;
+﻿using Core.Modelos.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
