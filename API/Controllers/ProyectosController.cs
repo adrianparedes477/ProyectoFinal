@@ -107,10 +107,16 @@ namespace API.Controllers
         [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(List<ProyectoDto>), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
         {
             try
             {
+                if (estado < 1 || estado > 3)
+                {
+                    return ResponseFactory.CreateErrorResponse(404, "El estado debe estar entre 1 y 3.");
+                }
+
                 var proyectos = await _proyectoNegocio.GetProyectosPorEstado(estado);
                 return ResponseFactory.CreateSuccessResponse(200, proyectos);
             }
