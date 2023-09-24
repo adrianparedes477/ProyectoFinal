@@ -29,11 +29,15 @@ namespace API.Controllers
         /// <returns>Una lista de proyectos paginados.</returns>
         /// <response code="200">Devuelve una lista de proyectos paginados.</response>
         /// <response code="400">Si hay un error en la solicitud o en el procesamiento.</response>
+        /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
+        /// <response code="403">Si un usuario que no es administrador o consultor intenta ejecutar el endpoint.</response>
         /// <response code="404">si no se encuentra el proyecto.</response>
         [HttpGet]
         [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 401)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 403)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetAllProyectos(int pageNumber = 1, int pageSize = 10)
         {
@@ -64,7 +68,7 @@ namespace API.Controllers
         ///     <para>Devuelve un mensaje de error si el proyecto no se encuentra.</para>
         /// </returns>
         /// <response code="200">Devuelve el proyecto con el ID especificado.</response>
-        /// <response code="401">Si un usuario que no ha iniciado sesión intenta acceder.</response>
+        /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
         /// <response code="403">Si un usuario que no es administrador o consultor intenta ejecutar el endpoint.</response>
         /// <response code="404">Si el proyecto no fue encontrado.</response>
         [HttpGet("{id}")]
@@ -103,10 +107,13 @@ namespace API.Controllers
         /// </returns>
         /// <response code="200">Devuelve la lista de proyectos con el estado especificado.</response>
         /// <response code="400">Si hay un error en la solicitud o en el procesamiento.</response>
+        /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
+        /// <response code="403">Si un usuario que no es administrador o consultor intenta ejecutar el endpoint.</response>
         [HttpGet("proyectosPorEstado/{estado}")]
         [Authorize(Policy = "AdminOrConsultor")]
         [ProducesResponseType(typeof(List<ProyectoDto>), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 401)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> GetProyectosPorEstado(int estado)
         {
@@ -128,17 +135,19 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// Crea un nuevo proyecto.Solo habilitado para los Administradores
+        /// Crea un nuevo proyecto(Administradores).
         /// </summary>
         /// <param name="proyectoDto">Datos del proyecto a crear.</param>
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">Se ha creado el proyecto exitosamente.</response>
         /// <response code="400">Si ya existe un proyecto con el mismo nombre o no se pudo crear el proyecto.</response>
+        /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
         /// <response code="403">El usuario no está autorizado.</response>
         [HttpPost]
         [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 401)]
         [ProducesResponseType(typeof(ApiErrorResponse), 403)]
         public async Task<IActionResult> CrearProyecto([FromBody] ProyectoReedDto proyectoDto)
         {
@@ -168,17 +177,21 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// Actualiza un proyecto existente por su ID.Solo habilitado para los Administradores
+        /// Actualiza un proyecto existente por su ID(Administradores).
         /// </summary>
         /// <param name="id">ID del proyecto a actualizar.</param>
         /// <param name="proyectoDto">Datos actualizados del proyecto.</param>
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">El proyecto se actualizó exitosamente.</response>
         /// <response code="400">Si el ID del proyecto no coincide, la información es incorrecta o el proyecto no pudo ser actualizado.</response>
+        /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
+        /// <response code="403">El usuario no está autorizado.</response>
         [HttpPut("{id}")]
         [Authorize(Policy = "Administrador")]
-        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 401)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 403)]
         [ProducesResponseType(typeof(ApiSuccessResponse), 500)]
         public async Task<IActionResult> ActualizarProyecto(int id, [FromBody] ProyectoDto proyectoDto)
         {
@@ -213,28 +226,37 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// Elimina un proyecto por su ID. Solo habilitado para los Administradores
+        /// Elimina un proyecto por su ID(Administradores).
         /// </summary>
         /// <param name="id">ID del proyecto a eliminar.</param>
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">El proyecto se eliminó exitosamente.</response>
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta acceder.</response>
+        /// <response code="403">El usuario no está autorizado.</response>
         /// <response code="404">Si el proyecto no fue encontrado.</response>
         [HttpDelete("{id}")]
         [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 401)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 403)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
         public async Task<IActionResult> EliminarProyecto(int id)
         {
-            var eliminado = await _proyectoNegocio.EliminarProyecto(id);
-
-            if (eliminado)
+            try
             {
-                return ResponseFactory.CreateSuccessResponse(200, "Proyecto eliminado exitosamente");
-            }
+                var eliminado = await _proyectoNegocio.EliminarProyecto(id);
 
-            return ResponseFactory.CreateErrorResponse(404, "Proyecto no encontrado");
+                if (eliminado)
+                {
+                    return ResponseFactory.CreateSuccessResponse(200, "Proyecto eliminado exitosamente");
+                }
+
+                return ResponseFactory.CreateErrorResponse(404, "Proyecto no encontrado");
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(400, ex.Message);
+            }
         }
 
     }
