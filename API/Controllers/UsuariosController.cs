@@ -37,6 +37,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(List<UsuarioDTO>), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiErrorResponse), 401)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 500)]
         public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
         {
             try
@@ -73,6 +74,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), 401)]
         [ProducesResponseType(typeof(ApiErrorResponse), 403)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 500)]
         public async Task<IActionResult> GetUsuarioById(int id)
         {
             try
@@ -95,7 +97,7 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// Crea un nuevo usuario(Administradores).
+        /// Crea un nuevo usuario.
         /// </summary>
         /// <param name="usuarioDTO">Datos del usuario a crear.</param>
         /// <returns>
@@ -135,6 +137,7 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor: " + ex.Message);
             }
         }
+
 
 
 

@@ -169,9 +169,16 @@ namespace API.Controllers
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">Si el servicio se actualiza exitosamente.</response>
         /// <response code="400">Si el ID del servicio no coincide o la información es incorrecta.</response>
+        /// <response code="401">Si un usuario no autenticado intenta acceder.</response>
+        /// <response code="403">Si un usuario no autorizado intenta acceder.</response>
         /// <response code="500">Si ocurre un error interno del servidor.</response>
         [HttpPut("{id}")]
         [Authorize(Policy = "Administrador")]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 401)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 403)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 500)]
         public async Task<IActionResult> ActualizarServicio(int id, [FromBody] ServicioDTO servicioDTO)
         {
             if (id != servicioDTO.Id)
@@ -210,21 +217,33 @@ namespace API.Controllers
         /// <param name="id">ID del servicio a eliminar.</param>
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">Si el servicio se elimina exitosamente.</response>
+        /// <response code="401">Si un usuario no autenticado intenta acceder.</response>
+        /// <response code="403">Si un usuario no autorizado intenta acceder.</response>
         /// <response code="404">Si el servicio no se encuentra.</response>
         [HttpDelete("{id}")]
         [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 401)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 403)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 500)]
         public async Task<IActionResult> EliminarServicio(int id)
         {
-            var eliminado = await _servicioNegocio.EliminarServicio(id);
-
-            if (eliminado)
+            try
             {
-                return ResponseFactory.CreateSuccessResponse(200, "Servicio eliminado exitosamente");
-            }
+                var eliminado = await _servicioNegocio.EliminarServicio(id);
 
-            return ResponseFactory.CreateErrorResponse(404, "Servicio no encontrado");
+                if (eliminado)
+                {
+                    return ResponseFactory.CreateSuccessResponse(200, "Servicio eliminado exitosamente");
+                }
+
+                return ResponseFactory.CreateErrorResponse(404, "Servicio no encontrado");
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
+            }
         }
 
     }
