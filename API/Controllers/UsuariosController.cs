@@ -97,7 +97,7 @@ namespace API.Controllers
 
 
         /// <summary>
-        /// Crea un nuevo usuario.
+        /// Crea un nuevo usuario(Administradores).
         /// </summary>
         /// <param name="usuarioDTO">Datos del usuario a crear.</param>
         /// <returns>
