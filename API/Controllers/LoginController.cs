@@ -1,4 +1,4 @@
-﻿using API.Helpers;
+using API.Helpers;
 using API.Negocio.INegocio;
 using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
@@ -45,6 +45,23 @@ namespace API.Controllers
             {
                 return Unauthorized("Credenciales inválidas. Asegúrese de proporcionar credenciales correctas.");
             }
+
+            return Ok(usuario);
+        }
+
+
+        /// Logueo de usuario.
+        /// </summary>
+        [HttpPost]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(String))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Login([FromBody] AuthenticateDto dto)
+        {
+            var usuario = await _loginNegocio.AuthenticateCredentials(dto);
+
+            if (usuario is null)
+                return Unauthorized("Las credenciales son incorrectas");
 
             return Ok(usuario);
         }

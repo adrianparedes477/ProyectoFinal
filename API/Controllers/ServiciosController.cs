@@ -1,4 +1,4 @@
-﻿using API.Negocio.INegocio;
+using API.Negocio.INegocio;
 using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
@@ -51,6 +51,15 @@ namespace API.Controllers
             {
                 return ResponseFactory.CreateErrorResponse(400, ex.Message);
             }
+
+        [HttpGet]
+        [Authorize(Policy = "AdminOrConsultor")]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        public async Task<IActionResult> GetAllServicios(int pageNumber = 1, int pageSize = 10)
+        {
+            var servicioDto = await _servicioNegocio.GetAllServicios(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, servicioDto);
+
         }
 
 
@@ -59,6 +68,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">ID del servicio.</param>
         /// <returns>El servicio correspondiente al ID proporcionado.</returns>
+
         /// <response code="200">Devuelve el servicio con el ID especificado.</response>
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta acceder.</response>
         /// <response code="403">Si un usuario que no es administrador o consultor intenta ejecutar el endpoint.</response>
@@ -170,6 +180,58 @@ namespace API.Controllers
         /// <response code="200">Si el servicio se actualiza exitosamente.</response>
         /// <response code="400">Si el ID del servicio no coincide o la información es incorrecta.</response>
         /// <response code="500">Si ocurre un error interno del servidor.</response>
+
+        [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrConsultor")]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+        public async Task<IActionResult> GetServicioById(int id)
+        {
+            var servicioDto = await _servicioNegocio.GetServicioById(id);
+
+            if (servicioDto == null)
+            {
+                return ResponseFactory.CreateErrorResponse(404, "El servicio no fue encontrado");
+            }
+
+            return ResponseFactory.CreateSuccessResponse(200, servicioDto);
+        }
+
+
+        /// <summary>
+        /// Obtiene servicios activos.
+        /// </summary>
+        /// <returns>Lista de servicios activos.</returns>
+        [HttpGet("activos")]
+        [Authorize(Policy = "AdminOrConsultor")]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+        public async Task<IActionResult> GetServiciosActivos()
+        {
+            var serviciosActivos = await _servicioNegocio.GetServiciosActivos();
+            return ResponseFactory.CreateSuccessResponse(200, serviciosActivos);
+        }
+
+        /// <summary>
+        /// Crea un nuevo servicio.
+        /// </summary>
+        [HttpPost]
+        [Authorize(Policy = "Administrador")]
+        public async Task<IActionResult> CrearServicio([FromBody] ServicioReedDTO servicioDTO)
+        {
+            var creado = await _servicioNegocio.CrearServicio(servicioDTO);
+
+            if (creado)
+            {
+                return ResponseFactory.CreateSuccessResponse(200, "Servicio creado exitosamente");
+            }
+
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Servicio");
+        }
+
+        /// <summary>
+        /// Actualiza un servicio existente por su ID.
+        /// </summary>
+
         [HttpPut("{id}")]
         [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> ActualizarServicio(int id, [FromBody] ServicioDTO servicioDTO)
@@ -199,12 +261,17 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+
                 return ResponseFactory.CreateErrorResponse(500, ex.Message);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+
             }
         }
 
 
         /// <summary>
+
         /// Elimina un servicio por su ID(Administradores).
         /// </summary>
         /// <param name="id">ID del servicio a eliminar.</param>
@@ -215,6 +282,12 @@ namespace API.Controllers
         [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+
+        /// Elimina un servicio por su ID.
+        /// </summary>
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
+
         public async Task<IActionResult> EliminarServicio(int id)
         {
             var eliminado = await _servicioNegocio.EliminarServicio(id);

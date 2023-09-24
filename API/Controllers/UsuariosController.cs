@@ -1,4 +1,4 @@
-﻿using Core.Modelos.DTO;
+using Core.Modelos.DTO;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
@@ -28,6 +28,7 @@ namespace API.Controllers
         /// <param name="pageNumber">Número de página.</param>
         /// <param name="pageSize">Tamaño de la página.</param>
         /// <returns>Una lista paginada de usuarios.</returns>
+
         /// <response code="200">Devuelve la lista paginada de usuario.</response>
         /// <response code="400">Si no se encontraron usuario.</response>
         /// <response code="401">Si un usuario no autenticado intenta acceder.</response>
@@ -140,10 +141,66 @@ namespace API.Controllers
 
         /// <summary>
         /// Actualiza un usuario existente(Administradores).
+        [HttpGet]
+        [Authorize(Policy = "AdminOrConsultor")]
+        public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
+        {
+            var usuariosDto = await _usuarioNegocio.GetAllUsuarios(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, usuariosDto);
+        }
+
+
+        /// <summary>
+        /// Obtiene un usuario por su ID.
+        /// </summary>
+        /// <param name="id">ID del usuario.</param>
+        /// <returns>El usuario con el ID especificado.</returns>
+        [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrConsultor")]
+        public async Task<IActionResult> GetUsuarioById(int id)
+        {
+            var usuario = await _usuarioNegocio.GetUsuarioById(id);
+            if (usuario == null)
+            {
+                return ResponseFactory.CreateSuccessResponse(404,"El Usuario no fue encontrado");
+            }
+            return ResponseFactory.CreateSuccessResponse(200, usuario);
+        }
+
+
+        /// <summary>
+        /// Crea un nuevo usuario.
+        /// </summary>
+        /// <param name="usuarioDTO">Datos del usuario a crear.</param>
+        /// <returns>Respuesta de estado de la creación.</returns>
+        [HttpPost]
+        [Authorize(Policy = "Administrador")]
+        public async Task<IActionResult> CrearUsuario([FromBody] UsuarioReedDTO usuarioDTO)
+        {
+            var existeUsuario = await _unidadTrabajo.Usuario.Existe(p => p.NombreCompleto == usuarioDTO.NombreCompleto);
+
+            if (existeUsuario)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Ya existe un Usuario con ese nombre.");
+            }
+            var creado = await _usuarioNegocio.CrearUsuario(usuarioDTO);
+            if (creado)
+            {
+                return ResponseFactory.CreateSuccessResponse(200, "Usuario creado exitosamente");
+            }
+
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Usuario");
+        }
+
+
+        /// <summary>
+        /// Actualiza un usuario existente.
+
         /// </summary>
         /// <param name="id">ID del usuario a actualizar.</param>
         /// <param name="usuarioDTO">Nuevos datos del usuario.</param>
         /// <returns>Respuesta de estado de la actualización.</returns>
+
         /// <response code="200">Usuario actualizado exitosamente.</response>
         /// <response code="400">Si el ID del usuario no coincide, la información es incorrecta o el usuario no pudo ser actualizado.</response>
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
@@ -170,6 +227,24 @@ namespace API.Controllers
                     return ResponseFactory.CreateErrorResponse(400, "Informacion incorrecta");
                 }
 
+
+        [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
+        public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] UsuarioDTO usuarioDTO)
+        {
+            if (id != usuarioDTO.Id)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Id del usuario no coincide");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Informacion incorrecta");
+            }
+
+            try
+            {
+
                 var actualizado = await _usuarioNegocio.ActualizarUsuario(usuarioDTO);
 
                 if (actualizado)
@@ -186,6 +261,7 @@ namespace API.Controllers
                 return StatusCode(500, "Error interno del servidor: " + ex.Message);
             }
         }
+
 
 
 
@@ -223,6 +299,26 @@ namespace API.Controllers
             {
                 return StatusCode(500, "Error interno del servidor: " + ex.Message);
             }
+        }
+
+
+        /// <summary>
+        /// Elimina un usuario por su ID.
+        /// </summary>
+        /// <param name="id">ID del usuario a eliminar.</param>
+        /// <returns>Respuesta de estado de la eliminación.</returns>
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
+        public async Task<IActionResult> EliminarUsuario(int id)
+        {
+            var eliminado = await _usuarioNegocio.EliminarUsuario(id);
+
+            if (eliminado)
+            {
+                return ResponseFactory.CreateSuccessResponse(200, "Usuario eliminado exitosamente");
+            }
+
+            return ResponseFactory.CreateErrorResponse(404, "Usuario no encontrado");
         }
 
 

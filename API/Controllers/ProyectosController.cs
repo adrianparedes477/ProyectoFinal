@@ -69,6 +69,7 @@ namespace API.Controllers
         /// </returns>
         /// <response code="200">Devuelve el proyecto con el ID especificado.</response>
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
+        /// <response code="401">Si un usuario que no ha iniciado sesión intenta acceder.</response>
         /// <response code="403">Si un usuario que no es administrador o consultor intenta ejecutar el endpoint.</response>
         /// <response code="404">Si el proyecto no fue encontrado.</response>
         [HttpGet("{id}")]
@@ -136,6 +137,7 @@ namespace API.Controllers
 
         /// <summary>
         /// Crea un nuevo proyecto(Administradores).
+        /// Crea un nuevo proyecto.Solo habilitado para los Administradores
         /// </summary>
         /// <param name="proyectoDto">Datos del proyecto a crear.</param>
         /// <returns>El resultado de la operación.</returns>
@@ -177,13 +179,18 @@ namespace API.Controllers
 
 
         /// <summary>
+
         /// Actualiza un proyecto existente por su ID(Administradores).
+
+        /// Actualiza un proyecto existente por su ID.Solo habilitado para los Administradores
+
         /// </summary>
         /// <param name="id">ID del proyecto a actualizar.</param>
         /// <param name="proyectoDto">Datos actualizados del proyecto.</param>
         /// <returns>El resultado de la operación.</returns>
         /// <response code="200">El proyecto se actualizó exitosamente.</response>
         /// <response code="400">Si el ID del proyecto no coincide, la información es incorrecta o el proyecto no pudo ser actualizado.</response>
+
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
         /// <response code="403">El usuario no está autorizado.</response>
         [HttpPut("{id}")]
@@ -192,6 +199,12 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiSuccessResponse), 401)]
         [ProducesResponseType(typeof(ApiSuccessResponse), 403)]
+
+        [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
+        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
+
         [ProducesResponseType(typeof(ApiSuccessResponse), 500)]
         public async Task<IActionResult> ActualizarProyecto(int id, [FromBody] ProyectoDto proyectoDto)
         {
@@ -226,7 +239,9 @@ namespace API.Controllers
 
 
         /// <summary>
+
         /// Elimina un proyecto por su ID(Administradores).
+        /// Elimina un proyecto por su ID. Solo habilitado para los Administradores
         /// </summary>
         /// <param name="id">ID del proyecto a eliminar.</param>
         /// <returns>El resultado de la operación.</returns>
@@ -257,6 +272,19 @@ namespace API.Controllers
             {
                 return ResponseFactory.CreateErrorResponse(400, ex.Message);
             }
+
+        [ProducesResponseType(typeof(ApiErrorResponse), 404)]
+        public async Task<IActionResult> EliminarProyecto(int id)
+        {
+            var eliminado = await _proyectoNegocio.EliminarProyecto(id);
+
+            if (eliminado)
+            {
+                return ResponseFactory.CreateSuccessResponse(200, "Proyecto eliminado exitosamente");
+            }
+
+            return ResponseFactory.CreateErrorResponse(404, "Proyecto no encontrado");
+
         }
 
     }

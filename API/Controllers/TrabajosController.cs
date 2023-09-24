@@ -1,4 +1,4 @@
-﻿using API.Negocio.INegocio;
+using API.Negocio.INegocio;
 using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
 using Infraestructura.Response;
@@ -24,6 +24,7 @@ namespace API.Controllers
         /// <summary>
         /// Obtiene todos los trabajos paginados.
         /// </summary>
+
         /// <param name="pageNumber">Número de página.</param>
         /// <param name="pageSize">Tamaño de la página.</param>
         /// <returns>Una lista paginada de trabajos.</returns>
@@ -168,6 +169,71 @@ namespace API.Controllers
                     return ResponseFactory.CreateErrorResponse(400, "Información incorrecta");
                 }
 
+
+        [HttpGet]
+        [Authorize(Policy = "AdminOrConsultor")]
+        public async Task<IActionResult> GetAllTrabajos(int pageNumber = 1, int pageSize = 10)
+        {
+            var trabajosDto = await _trabajoNegocio.GetAllTrabajos(pageNumber, pageSize);
+            return ResponseFactory.CreateSuccessResponse(200, trabajosDto);
+        }
+
+        /// <summary>
+        /// Obtiene un trabajo por su ID.
+        /// </summary>
+        [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrConsultor")]
+        public async Task<IActionResult> GetTrabajoById(int id)
+        {
+            var trabajo = await _trabajoNegocio.GetTrabajoById(id);
+
+            if (trabajo == null)
+            {
+                return ResponseFactory.CreateSuccessResponse(404,"El proyecto no fue encontrado");
+            }
+
+            return ResponseFactory.CreateSuccessResponse(200, trabajo);
+        }
+
+        /// <summary>
+        /// Crea un nuevo trabajo.
+        /// </summary>
+        [HttpPost]
+        [Authorize(Policy = "Administrador")]
+        public async Task<IActionResult> CrearTrabajo([FromBody] TrabajoCrearDTO trabajoDto, [FromQuery] int proyectoId, [FromQuery] int servicioId)
+        {
+            var creado = await _trabajoNegocio.CrearTrabajo(trabajoDto, proyectoId, servicioId);
+
+            if (creado)
+            {
+                return ResponseFactory.CreateSuccessResponse(200, "Trabajo creado exitosamente");
+            }
+
+            return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Trabajo");
+        }
+
+        /// <summary>
+        /// Actualiza un trabajo existente por su ID.
+        /// </summary>
+        [HttpPut("{id}")]
+        [Authorize(Policy = "Administrador")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ActualizarTrabajo(int id, [FromBody] TrabajoActualizarDTO trabajoDTO)
+        {
+            if (id != trabajoDTO.Id)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Id del Trabajo no coincide");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return ResponseFactory.CreateErrorResponse(400, "Información incorrecta");
+            }
+
+            try
+            {
+
                 var actualizado = await _trabajoNegocio.ActualizarTrabajo(trabajoDTO);
 
                 if (actualizado)
@@ -186,6 +252,7 @@ namespace API.Controllers
         }
 
         /// <summary>
+
         /// Elimina un trabajo por su ID(Administradores).
         /// </summary>
         /// <param name="id">ID único del trabajo a eliminar.</param>
@@ -221,6 +288,23 @@ namespace API.Controllers
             {
                 return ResponseFactory.CreateErrorResponse(500, "Error interno del servidor: " + ex.Message);
             }
+        }
+
+
+        /// Elimina un trabajo por su ID.
+        /// </summary>
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "Administrador")]
+        public async Task<IActionResult> EliminarTrabajo(int id)
+        {
+            var eliminado = await _trabajoNegocio.EliminarTrabajo(id);
+
+            if (eliminado)
+            {
+                return ResponseFactory.CreateSuccessResponse(200, "Trabajo eliminado exitosamente");
+            }
+
+            return ResponseFactory.CreateErrorResponse(404, "Trabajo no encontrado");
         }
 
 
