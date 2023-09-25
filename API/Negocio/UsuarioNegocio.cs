@@ -54,6 +54,10 @@ namespace Core.Negocio
             {
                 throw new Exception("Ya existe un usuario con ese nombre.");
             }
+            if (usuarioDTO.Dni == 0)
+            {
+                throw new Exception("El DNI no puede ser 0.");
+            }
 
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
             usuario.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);
@@ -77,6 +81,14 @@ namespace Core.Negocio
             {
                 if (!string.IsNullOrEmpty(usuarioDTO.NombreCompleto))
                 {
+                    // Verificar si el nuevo nombre completo ya existe
+                    var nombreCompletoExiste = await _usuarioRepositorio.Existe(u => u.NombreCompleto == usuarioDTO.NombreCompleto && u.Id != usuarioDTO.Id);
+
+                    if (nombreCompletoExiste)
+                    {
+                        throw new Exception("El nuevo nombre de usuario ya existe en la base de datos.");
+                    }
+
                     usuarioExiste.NombreCompleto = usuarioDTO.NombreCompleto;
                 }
 
@@ -84,7 +96,6 @@ namespace Core.Negocio
                 {
                     usuarioExiste.Dni = usuarioDTO.Dni;
                 }
-
 
                 if (!string.IsNullOrEmpty(usuarioDTO.Tipo))
                 {
@@ -98,7 +109,6 @@ namespace Core.Negocio
                     }
                 }
 
-
                 _usuarioRepositorio.Actualizar(usuarioExiste);
                 await _unidadTrabajo.Guardar();
                 return true;
@@ -108,6 +118,8 @@ namespace Core.Negocio
                 throw new Exception("El Usuario no existe en la base de datos.");
             }
         }
+
+
 
         public async Task<bool> EliminarUsuario(int id)
         {

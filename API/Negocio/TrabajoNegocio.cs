@@ -86,6 +86,7 @@ namespace API.Negocio
 
             if (trabajoExiste !=null)
             {
+                
                 // Verificar si trabajoDto.Fecha no es nulo o vacío antes de actualizar
                 if (!string.IsNullOrEmpty(trabajoDTO.Fecha))
                 {
@@ -113,7 +114,7 @@ namespace API.Negocio
                 }
 
                 // Verificar si trabajoDto.Costo es mayor o igual a cero antes de actualizar
-                if (trabajoDTO.Costo >= 0)
+                if (trabajoDTO.Costo > 0)
                 {
                     trabajoExiste.Costo = trabajoDTO.Costo;
                 }
