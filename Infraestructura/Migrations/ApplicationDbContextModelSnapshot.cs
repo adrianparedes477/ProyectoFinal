@@ -31,18 +31,65 @@ namespace Infraestructura.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("Borrado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Creado")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("Estado")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<DateTime>("UltimaModificacion")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Proyecto");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Borrado = false,
+                            Creado = new DateTime(2023, 2, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Direccion = "Calle falsa 123",
+                            Estado = 2,
+                            Nombre = "Proyecto A",
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6989)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Borrado = false,
+                            Creado = new DateTime(2023, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Direccion = "Calle falsa 456",
+                            Estado = 3,
+                            Nombre = "Proyecto B",
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6991)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Borrado = false,
+                            Creado = new DateTime(2023, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Direccion = "Calle falsa 789",
+                            Estado = 1,
+                            Nombre = "Proyecto C",
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6992)
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Servicio", b =>
@@ -54,18 +101,55 @@ namespace Infraestructura.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Descr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Estado")
+                    b.Property<bool>("Borrado")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("Creado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descr")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("Estado")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("UltimaModificacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("ValorHora")
+                        .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Servicio");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Borrado = false,
+                            Creado = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Descr = "Servicio 1",
+                            Estado = true,
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(7048),
+                            ValorHora = 10.50m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Borrado = false,
+                            Creado = new DateTime(2023, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Descr = "Servicio 2",
+                            Estado = false,
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(7049),
+                            ValorHora = 15.75m
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Trabajo", b =>
@@ -77,7 +161,11 @@ namespace Infraestructura.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("Borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("CantHoras")
+                        .HasMaxLength(60)
                         .HasColumnType("int");
 
                     b.Property<int>("CodProyecto")
@@ -87,12 +175,20 @@ namespace Infraestructura.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Costo")
+                        .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("Creado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Fecha")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("UltimaModificacion")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("ValorHora")
+                        .HasMaxLength(60)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -102,6 +198,21 @@ namespace Infraestructura.Migrations
                     b.HasIndex("CodServicio");
 
                     b.ToTable("Trabajo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Borrado = false,
+                            CantHoras = 20,
+                            CodProyecto = 1,
+                            CodServicio = 1,
+                            Costo = 20m,
+                            Creado = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fecha = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(7103),
+                            ValorHora = 10m
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Usuario", b =>
@@ -113,21 +224,61 @@ namespace Infraestructura.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("Borrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Contrasenia")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("Creado")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Dni")
+                        .HasMaxLength(60)
                         .HasColumnType("int");
 
-                    b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("NombreCompleto")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<int>("Tipo")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(2);
+
+                    b.Property<DateTime>("UltimaModificacion")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Usuario");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Borrado = false,
+                            Contrasenia = "45e74d58cd55f7a495ba9965402e0694f76eb760e7d0aadaf9e34b694a5cf16e",
+                            Creado = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Dni = 12345678,
+                            NombreCompleto = "Admin",
+                            Tipo = 1,
+                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6771)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Borrado = false,
+                            Contrasenia = "0743985993bc77c52297bef8342de610146d8a5f356b5963dec0ed0f95acc6c9",
+                            Creado = new DateTime(2023, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Dni = 87654321,
+                            NombreCompleto = "Consultor",
+                            Tipo = 2,
+                            UltimaModificacion = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Core.Entidades.Trabajo", b =>

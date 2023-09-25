@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO
+namespace Core.Modelos.DTO
 {
     public class UsuarioLoginDTO
     {
-        public string Nombre { get; set; }
+        public string NombreCompleto { get; set; }
+        public int Dni { get; set; }
+        public string Token { get; set; }
 
-        public string Contrasenia { get; set; }
     }
 }

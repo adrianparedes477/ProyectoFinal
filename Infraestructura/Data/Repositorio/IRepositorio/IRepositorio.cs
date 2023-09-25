@@ -1,4 +1,5 @@
-﻿using System;
+﻿using API.Especificaciones;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,6 +18,16 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
              string incluirPropiedades = null,
              bool isTracking = true
              );
+
+        Task<PagedList<T>> ObtenerTodosPaginado(
+           Parametros parametros,
+           Expression<Func<T, bool>> filtro = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+           string incluirPropiedades = null  
+        );
+
+        Task<bool> Existe(Expression<Func<T, bool>> filtro);
+
         Task<T> ObtenerPrimero(
             Expression<Func<T, bool>> filtro = null,
             string incluirPropiedades = null,
@@ -25,7 +36,10 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
 
         Task Agregar(T entidad);
 
-        void Remover(T entidad);
+
+        //void Remover(T entidad);
+
+        Task<bool> Eliminar(int id);
 
         void RemoverRango(IEnumerable<T> entidad);
 

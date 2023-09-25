@@ -1,25 +1,37 @@
 ﻿using AutoMapper;
 using Core.Entidades;
-using Core.DTO;
 using static Core.Entidades.Usuario;
+using System.Globalization;
+using Core.Modelos.DTO;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Proyecto, ProyectoDto>().ReverseMap();
+        CreateMap<Servicio, ServicioDTO>().ReverseMap();
+        CreateMap<Trabajo, TrabajoDTO>().ReverseMap();
+        CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+
+        CreateMap<Proyecto, ProyectoReedDto>().ReverseMap();
+        CreateMap<Servicio, ServicioReedDTO>().ReverseMap();
+        CreateMap<Trabajo, TrabajoReedDTO>().ReverseMap();
+        CreateMap<Trabajo, TrabajoCrearDTO>().ReverseMap();
+        CreateMap<Usuario, UsuarioReedDTO>().ReverseMap();
+        CreateMap<Usuario, UsuarioLoginDTO>().ReverseMap();
+
         // Mapeo de Proyecto a ProyectoDto
         CreateMap<Proyecto, ProyectoDto>()
             .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado.ToString()));
 
-        // Mapeo de Servicio a ServicioDTO
-        CreateMap<Servicio, ServicioDTO>()
-            .ForMember(dest => dest.Estado, opt => opt.MapFrom(src => src.Estado ? "Activo" : "No Activo"));
+        // Mapeo de TrabajoDTO a Trabajo
+        CreateMap<TrabajoDTO, Trabajo>()
+        .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => DateTime.ParseExact(src.Fecha, "dd/MM/yyyy", CultureInfo.InvariantCulture)))
+        .ForMember(dest => dest.ValorHora, opt => opt.MapFrom(src => src.ValorHora))
+        .ForMember(dest => dest.Costo, opt => opt.MapFrom(src => src.Costo));
 
-        // Mapeo de Trabajo a TrabajoDTO
-        CreateMap<Trabajo, TrabajoDTO>()
-            .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => src.Fecha.ToString("yyyy-MM-dd")))
-            .ForMember(dest => dest.NombreProyecto, opt => opt.MapFrom(src => src.Proyecto.Nombre))
-            .ForMember(dest => dest.NombreServicio, opt => opt.MapFrom(src => src.Servicio.Descr));
+        CreateMap<TrabajoActualizarDTO, Trabajo>()
+       .ForMember(dest => dest.Fecha, opt => opt.MapFrom(src => DateTime.ParseExact(src.Fecha, "dd/MM/yyyy", CultureInfo.InvariantCulture)));
 
         // Mapeo de Usuario a UsuarioDTO
         CreateMap<Usuario, UsuarioDTO>()
@@ -29,8 +41,5 @@ public class MappingProfile : Profile
         CreateMap<UsuarioDTO, Usuario>()
             .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => Enum.Parse(typeof(TipoUsuario), src.Tipo)));
 
-        // Mapeo de LoginAdminDTO a Usuario (para el inicio de sesión de administrador)
-        CreateMap<LoginAdminDTO, Usuario>()
-            .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => TipoUsuario.Admistrador));
     }
 }

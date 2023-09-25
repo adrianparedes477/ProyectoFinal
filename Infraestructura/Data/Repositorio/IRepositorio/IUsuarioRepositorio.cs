@@ -1,4 +1,5 @@
 ﻿using Core.Entidades;
+using Core.Modelos.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Infraestructura.Data.Repositorio.IRepositorio
 {
     public interface IUsuarioRepositorio : IRepositorio<Usuario>
     {
-        void Actulizar(Usuario usuario);
+        void Actualizar(Usuario usuario);
+
+        Task<Usuario> AuthenticateCredentials(AuthenticateDto dto);
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.Data.Repositorio
 {
@@ -27,6 +22,11 @@ namespace Infraestructura.Data.Repositorio
                 servicioDB.Estado = servicio.Estado;
                 servicioDB.ValorHora = servicio.ValorHora;
                 _db.SaveChanges();
+            }
+            else
+            {
+
+                throw new Exception("El Servicio no existe en la base de datos.");
             }
         }
     }

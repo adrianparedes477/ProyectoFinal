@@ -1,10 +1,6 @@
 ﻿using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructura.Data.Repositorio
 {
@@ -17,9 +13,17 @@ namespace Infraestructura.Data.Repositorio
             _db = db;
         }
 
+        public async Task<Trabajo> GetByIdWithPropertiesAsync(int id)
+        {
+            return await _db.Trabajo
+                .Include(t => t.Proyecto)
+                .Include(t => t.Servicio)
+                .SingleOrDefaultAsync(t => t.Id == id);
+        }
+
         public void Actualizar(Trabajo trabajo)
         {
-            var trabajoDB = _db.Trabajo.FirstOrDefault(t => t.Id == trabajo.Id); 
+            var trabajoDB = _db.Trabajo.FirstOrDefault(t => t.Id == trabajo.Id);
 
             if (trabajoDB != null)
             {
@@ -27,8 +31,16 @@ namespace Infraestructura.Data.Repositorio
                 trabajoDB.CantHoras = trabajo.CantHoras;
                 trabajoDB.ValorHora = trabajo.ValorHora;
                 trabajoDB.Costo = trabajo.Costo;
+
+                // Guardar los cambios en la base de datos
                 _db.SaveChanges();
             }
+            else
+            {
+                
+                throw new Exception("El trabajo no existe en la base de datos.");
+            }
         }
+
     }
 }

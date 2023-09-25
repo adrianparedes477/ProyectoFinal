@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO
+namespace Core.Modelos.DTO
 {
-    public class UsuarioDTO
+    public class ProyectoDto
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
-        public int Dni { get; set; }
-        public string Tipo { get; set; } // Cambio de enum a string
+        public string Direccion { get; set; }
+        public string Estado { get; set; } // Cambio de enum a string
     }
 }

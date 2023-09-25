@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTO
+namespace Core.Modelos.DTO
 {
     public class ServicioDTO
     {
-        public int CodServicio { get; set; }
+        public int Id { get; set; }
         public string Descr { get; set; }
-        public string Estado { get; set; } // Cambio de bool a string
+        public bool Estado { get; set; }
         public decimal ValorHora { get; set; }
     }
 }

@@ -1,14 +1,9 @@
 ﻿using Core.Entidades;
 using Infraestructura.Data.Repositorio.IRepositorio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.Data.Repositorio
 {
-    internal class ProyectoRepositorio :Repositorio<Proyecto>,IProyectoRepositorio
+    public class ProyectoRepositorio :Repositorio<Proyecto>,IProyectoRepositorio
     {
         private readonly ApplicationDbContext _db;
 
@@ -27,6 +22,11 @@ namespace Infraestructura.Data.Repositorio
                 proyectoDB.Direccion = proyecto.Direccion;
                 proyectoDB.Estado = proyecto.Estado;
                 _db.SaveChanges();
+            }
+            else
+            {
+
+                throw new Exception("El Proyecto no existe en la base de datos.");
             }
         }
     }
