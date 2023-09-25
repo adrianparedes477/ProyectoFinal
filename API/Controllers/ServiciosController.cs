@@ -146,14 +146,14 @@ namespace API.Controllers
         {
             try
             {
-                var creado = await _servicioNegocio.CrearServicio(servicioDTO);
+                var mensaje = await _servicioNegocio.CrearServicio(servicioDTO);
 
-                if (creado)
+                if (mensaje.Contains("exitosamente"))
                 {
-                    return ResponseFactory.CreateSuccessResponse(200, "Servicio creado exitosamente");
+                    return ResponseFactory.CreateSuccessResponse(200, mensaje);
                 }
 
-                return ResponseFactory.CreateErrorResponse(400, "No se pudo crear el Servicio");
+                return ResponseFactory.CreateErrorResponse(400, mensaje);
             }
             catch (Exception ex)
             {

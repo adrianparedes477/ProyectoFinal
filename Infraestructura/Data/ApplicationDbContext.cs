@@ -1,12 +1,8 @@
 ﻿using Core.Entidades;
 using Infraestructura.Data.Configuracion;
 using Infraestructura.Data.Seeds;
+using Infraestructura.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestructura.Data
 {

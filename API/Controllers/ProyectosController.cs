@@ -143,12 +143,14 @@ namespace API.Controllers
         /// <response code="400">Si ya existe un proyecto con el mismo nombre o no se pudo crear el proyecto.</response>
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
         /// <response code="403">El usuario no está autorizado.</response>
+        /// <response code="500">Si ocurre un error interno del servidor.</response>
         [HttpPost]
         [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiErrorResponse), 401)]
         [ProducesResponseType(typeof(ApiErrorResponse), 403)]
+        [ProducesResponseType(typeof(ApiErrorResponse), 500)]
         public async Task<IActionResult> CrearProyecto([FromBody] ProyectoReedDto proyectoDto)
         {
             try
@@ -186,6 +188,7 @@ namespace API.Controllers
         /// <response code="400">Si el ID del proyecto no coincide, la información es incorrecta o el proyecto no pudo ser actualizado.</response>
         /// <response code="401">Si un usuario que no ha iniciado sesión intenta ejecutar el endpoint.</response>
         /// <response code="403">El usuario no está autorizado.</response>
+        /// <response code="500">Si ocurre un error interno del servidor.</response>
         [HttpPut("{id}")]
         [Authorize(Policy = "Administrador")]
         [ProducesResponseType(typeof(ApiSuccessResponse), 200)]

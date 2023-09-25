@@ -1,7 +1,7 @@
 ﻿using Core.Entidades;
 using Core.Modelos.DTO;
 using Infraestructura.Data.Repositorio.IRepositorio;
-using Infraestructura.Data.Seeds;
+using Infraestructura.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructura.Data.Repositorio

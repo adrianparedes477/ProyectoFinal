@@ -4,7 +4,7 @@ using Core.Entidades;
 using Core.Modelos.DTO;
 using Core.Negocio.INegocio;
 using Infraestructura.Data.Repositorio.IRepositorio;
-using Infraestructura.Data.Seeds;
+using Infraestructura.Helpers;
 using static Core.Entidades.Usuario;
 
 namespace Core.Negocio
