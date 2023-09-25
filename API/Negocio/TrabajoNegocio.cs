@@ -44,10 +44,15 @@ namespace API.Negocio
         {
             var trabajo = await _unidadTrabajo.Trabajo.GetByIdWithPropertiesAsync(id);
 
-            var trabajoDto = _mapper.Map<TrabajoReedDTO>(trabajo);
-            trabajoDto.Proyecto = _mapper.Map<ProyectoReedDto>(trabajo.Proyecto);
-            trabajoDto.Servicio = _mapper.Map<ServicioReedDTO>(trabajo.Servicio);
-            return trabajoDto;
+            if (trabajo != null)
+            {
+                var trabajoDto = _mapper.Map<TrabajoReedDTO>(trabajo);
+                trabajoDto.Proyecto = _mapper.Map<ProyectoReedDto>(trabajo.Proyecto);
+                trabajoDto.Servicio = _mapper.Map<ServicioReedDTO>(trabajo.Servicio);
+                return trabajoDto;
+            }
+
+            return null;
         }
 
         public async Task<bool> CrearTrabajo(TrabajoCrearDTO trabajoDto, int proyectoId, int servicioId)
