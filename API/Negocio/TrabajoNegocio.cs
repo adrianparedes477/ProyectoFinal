@@ -57,6 +57,10 @@ namespace API.Negocio
 
             if (proyecto != null && servicio != null)
             {
+                if (trabajoDto.CantHoras == 0 || trabajoDto.ValorHora == 0 || trabajoDto.Costo == 0)
+                {
+                    throw new Exception("CantHoras, ValorHora y Costo no pueden ser 0.");
+                }
                 var trabajo = _mapper.Map<Trabajo>(trabajoDto);
                 trabajo.Proyecto = proyecto;
                 trabajo.Servicio = servicio;

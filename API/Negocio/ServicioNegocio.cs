@@ -45,13 +45,20 @@ namespace API.Negocio
         }
 
 
-        public async Task<bool> CrearServicio(ServicioReedDTO servicioDTO)
+        public async Task<string> CrearServicio(ServicioReedDTO servicioDTO)
         {
+            if (servicioDTO.ValorHora == 0)
+            {
+                return "El ValorHora no puede ser 0. Por favor, proporciona un valor válido.";
+            }
+
             var servicio = _mapper.Map<Servicio>(servicioDTO);
             await _unidadTrabajo.Servicio.Agregar(servicio);
             await _unidadTrabajo.Guardar();
-            return true;
+
+            return "Servicio creado exitosamente.";
         }
+
 
         public async Task<bool> ActualizarServicio(ServicioDTO servicioDTO)
         {
@@ -69,7 +76,7 @@ namespace API.Negocio
                     servicioExiste.Estado = servicioDTO.Estado;
                 }
 
-                if (servicioDTO.ValorHora != default(decimal))
+                if (servicioDTO.ValorHora != default(decimal) && servicioDTO.ValorHora != 0)
                 {
                     servicioExiste.ValorHora = servicioDTO.ValorHora;
                 }
