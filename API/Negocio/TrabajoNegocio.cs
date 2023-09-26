@@ -44,10 +44,15 @@ namespace API.Negocio
         {
             var trabajo = await _unidadTrabajo.Trabajo.GetByIdWithPropertiesAsync(id);
 
-            var trabajoDto = _mapper.Map<TrabajoReedDTO>(trabajo);
-            trabajoDto.Proyecto = _mapper.Map<ProyectoReedDto>(trabajo.Proyecto);
-            trabajoDto.Servicio = _mapper.Map<ServicioReedDTO>(trabajo.Servicio);
-            return trabajoDto;
+            if (trabajo != null)
+            {
+                var trabajoDto = _mapper.Map<TrabajoReedDTO>(trabajo);
+                trabajoDto.Proyecto = _mapper.Map<ProyectoReedDto>(trabajo.Proyecto);
+                trabajoDto.Servicio = _mapper.Map<ServicioReedDTO>(trabajo.Servicio);
+                return trabajoDto;
+            }
+
+            return null;
         }
 
         public async Task<bool> CrearTrabajo(TrabajoCrearDTO trabajoDto, int proyectoId, int servicioId)
@@ -81,6 +86,7 @@ namespace API.Negocio
 
             if (trabajoExiste !=null)
             {
+                
                 // Verificar si trabajoDto.Fecha no es nulo o vacío antes de actualizar
                 if (!string.IsNullOrEmpty(trabajoDTO.Fecha))
                 {
@@ -108,7 +114,7 @@ namespace API.Negocio
                 }
 
                 // Verificar si trabajoDto.Costo es mayor o igual a cero antes de actualizar
-                if (trabajoDTO.Costo >= 0)
+                if (trabajoDTO.Costo > 0)
                 {
                     trabajoExiste.Costo = trabajoDTO.Costo;
                 }

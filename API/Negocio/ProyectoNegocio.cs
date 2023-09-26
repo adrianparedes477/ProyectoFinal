@@ -66,6 +66,13 @@ namespace Core.Negocio
 
             if (proyectoExiste != null)
             {
+                var existeProyecto = await _unidadTrabajo.Proyecto.Existe(p => p.Nombre == proyectoDto.Nombre);
+
+                if (existeProyecto)
+                {
+                    throw new Exception("Ya existe un proyecto con ese nombre.");
+                }
+
                 // Verificar si proyectoDto.Nombre no es nulo o vacío antes de actualizar
                 if (!string.IsNullOrEmpty(proyectoDto.Nombre))
                 {
