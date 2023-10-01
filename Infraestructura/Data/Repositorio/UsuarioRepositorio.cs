@@ -24,6 +24,7 @@ namespace Infraestructura.Data.Repositorio
                 usuarioDB.NombreCompleto = usuario.NombreCompleto;
                 usuarioDB.Dni = usuario.Dni;
                 usuarioDB.Tipo = usuario.Tipo;
+                usuarioDB.Correo = usuario.Correo;
 
                 // Encripta la contraseña antes de guardarla
                 usuarioDB.Contrasenia = PasswordEncryptHelper.EncryptPassword(usuario.Contrasenia);

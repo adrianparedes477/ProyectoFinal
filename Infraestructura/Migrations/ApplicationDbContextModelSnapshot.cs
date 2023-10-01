@@ -68,7 +68,7 @@ namespace Infraestructura.Migrations
                             Direccion = "Calle falsa 123",
                             Estado = 2,
                             Nombre = "Proyecto A",
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6989)
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5637)
                         },
                         new
                         {
@@ -78,7 +78,7 @@ namespace Infraestructura.Migrations
                             Direccion = "Calle falsa 456",
                             Estado = 3,
                             Nombre = "Proyecto B",
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6991)
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5639)
                         },
                         new
                         {
@@ -88,7 +88,7 @@ namespace Infraestructura.Migrations
                             Direccion = "Calle falsa 789",
                             Estado = 1,
                             Nombre = "Proyecto C",
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6992)
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5640)
                         });
                 });
 
@@ -137,7 +137,7 @@ namespace Infraestructura.Migrations
                             Creado = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Descr = "Servicio 1",
                             Estado = true,
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(7048),
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5706),
                             ValorHora = 10.50m
                         },
                         new
@@ -147,7 +147,7 @@ namespace Infraestructura.Migrations
                             Creado = new DateTime(2023, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Descr = "Servicio 2",
                             Estado = false,
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(7049),
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5707),
                             ValorHora = 15.75m
                         });
                 });
@@ -210,7 +210,7 @@ namespace Infraestructura.Migrations
                             Costo = 20m,
                             Creado = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fecha = new DateTime(2023, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(7103),
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5758),
                             ValorHora = 10m
                         });
                 });
@@ -229,6 +229,10 @@ namespace Infraestructura.Migrations
 
                     b.Property<string>("Contrasenia")
                         .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("Correo")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
@@ -266,7 +270,7 @@ namespace Infraestructura.Migrations
                             Dni = 12345678,
                             NombreCompleto = "Admin",
                             Tipo = 1,
-                            UltimaModificacion = new DateTime(2023, 9, 18, 16, 11, 29, 328, DateTimeKind.Local).AddTicks(6771)
+                            UltimaModificacion = new DateTime(2023, 9, 30, 13, 47, 37, 177, DateTimeKind.Local).AddTicks(5457)
                         },
                         new
                         {
