@@ -38,7 +38,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
         [ProducesResponseType(typeof(ApiErrorResponse), 401)]
         [ProducesResponseType(typeof(ApiErrorResponse), 500)]
-        public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllUsuarios(int pageNumber = 1, int pageSize = 11)
         {
             try
             {

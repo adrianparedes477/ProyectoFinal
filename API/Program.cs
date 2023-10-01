@@ -12,10 +12,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Security.Claims;
+using Core.Entidades;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+
+builder.Services.AddCors();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -96,6 +98,9 @@ builder.Services.AddScoped<ITrabajoNegocio, TrabajoNegocio>();
 builder.Services.AddScoped<ILoginNegocio, LoginNegocio>();
 
 
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -107,9 +112,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseCors(builder => builder.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod());
 
 app.MapControllers();
 

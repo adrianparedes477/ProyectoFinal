@@ -28,6 +28,8 @@ namespace Core.Entidades
         [MaxLength(64, ErrorMessage = "El contraseña no puede tener mas de 64 caracteres")]
         public string Contrasenia { get; set; }
 
+        public string Correo { get; set; }
+
         public enum TipoUsuario
         {
             Administrador = 1,
