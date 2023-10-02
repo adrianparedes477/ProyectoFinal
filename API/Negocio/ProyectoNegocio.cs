@@ -47,6 +47,11 @@ namespace Core.Negocio
 
         public async Task<bool> CrearProyecto(ProyectoReedDto proyectoDto)
         {
+            if (!Enum.IsDefined(typeof(EstadoProyecto), proyectoDto.Estado))
+            {
+                throw new Exception("El valor del estado no es válido. Debe ser un número del 1 al 3.");
+            }
+
             var existeProyecto = await _unidadTrabajo.Proyecto.Existe(p => p.Nombre == proyectoDto.Nombre);
 
             if (existeProyecto)
@@ -88,15 +93,16 @@ namespace Core.Negocio
                 // Verificar si proyectoDto.Estado no es nulo o vacío antes de actualizar
                 if (!string.IsNullOrEmpty(proyectoDto.Estado))
                 {
-                    if (Enum.TryParse(typeof(EstadoProyecto), proyectoDto.Estado, out var estado))
+                    if (int.TryParse(proyectoDto.Estado, out int estado) && estado >= 1 && estado <= 3)
                     {
                         proyectoExiste.Estado = (EstadoProyecto)estado;
                     }
                     else
                     {
-                        throw new Exception("El valor del estado no es válido.");
+                        throw new Exception("El valor del estado no es válido. Debe ser un número del 1 al 3.");
                     }
                 }
+
                 _proyectoRepositorio.Actualizar(proyectoExiste);
                 await _unidadTrabajo.Guardar();
                 return true;
@@ -106,6 +112,7 @@ namespace Core.Negocio
                 throw new Exception("El Proyecto no existe en la base de datos.");
             }
         }
+
 
 
         public async Task<bool> EliminarProyecto(int id)
