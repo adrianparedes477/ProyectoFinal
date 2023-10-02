@@ -9,6 +9,7 @@ namespace Core.Modelos.DTO
 {
     public class ProyectoReedDto
     {
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "El Nombre es requerido")]
         public string Nombre { get; set; }

@@ -10,6 +10,8 @@ namespace Core.Modelos.DTO
 {
     public class UsuarioReedDTO
     {
+        public int Id { get; set; }
+
         [Display(Name = "Nombre del Usuario")]
         public string NombreCompleto { get; set; }
         public int Dni { get; set; }

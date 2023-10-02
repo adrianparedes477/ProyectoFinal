@@ -12,6 +12,7 @@ namespace Core.Modelos.DTO
 
     public class TrabajoReedDTO
     {
+        public int Id { get; set; }
         public string Fecha { get; set; } // Usamos DateTime? para permitir valores nulos
         public int CantHoras { get; set; }
         public ProyectoReedDto Proyecto { get; set; }
