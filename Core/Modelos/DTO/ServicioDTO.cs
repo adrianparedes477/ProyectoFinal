@@ -9,6 +9,7 @@ namespace Core.Modelos.DTO
 {
     public class ServicioReedDTO
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "La Descr es requerido")]
         public string Descr { get; set; }
         [Required(ErrorMessage = "El Estado es requerido")]
